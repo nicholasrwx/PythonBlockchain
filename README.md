@@ -1,2 +1,2 @@
 # python_practice
-# Learning python and blockchain basics
+  Learning python and blockchain basics
