@@ -10,7 +10,7 @@ def add_value(transaction_amount, last_transaction=[1]):
 
 
 add_value(2)
-add_value(.9, blockchain_value())
+add_value(last_transaction=blockchain_value(), transaction_amount=0.9)
 add_value(8.9, blockchain_value())
 
 
