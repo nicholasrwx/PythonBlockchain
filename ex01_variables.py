@@ -11,12 +11,12 @@ def age():
 
 
 def decades(age):
-  total = float(age) / 10
+  total = int(age) // 10
   return str(total)
 
 
 name = name()
 age = age()
-result = name + ' is ' + age + ', and has lived ' + decades(age) + ' decades.'
+result = name + ' is ' + age + ', and has lived for approximately ' + decades(age) + ' decades.'
 
 print(result)
