@@ -7,9 +7,11 @@ def name():
 
 
 def age():
-  return int(input('What is your age? '))
+  return input('What is your age? ')
 
 name = name()
 age = age()
+result = name + ' ' + age
 
-print(name, age)
+
+print(result)
