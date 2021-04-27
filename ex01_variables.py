@@ -9,9 +9,14 @@ def name():
 def age():
   return input('What is your age? ')
 
+
+def decades(age):
+  total = float(age) / 10
+  return str(total)
+
+
 name = name()
 age = age()
-result = name + ' ' + age
-
+result = name + ' is ' + age + ', and has lived ' + decades(age) + ' decades.'
 
 print(result)
