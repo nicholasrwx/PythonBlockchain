@@ -30,9 +30,13 @@ tx_amount = get_user_input()
 add_value(tx_amount, blockchain_value())
 
 
-# Output the blockchain list to the console
-for block in blockchain:
-    print('Output blockchain')
-    print(block)
+while True:
+    tx_amount = get_user_input()
+    add_value(tx_amount, blockchain_value())
+
+    # Output the blockchain list to the console
+    for block in blockchain:
+        print('Output blockchain')
+        print(block)
 
 print('Done')
