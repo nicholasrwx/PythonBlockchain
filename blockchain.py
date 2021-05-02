@@ -4,11 +4,16 @@ blockchain = []
 
 # return the last value in the blockchain
 def blockchain_value():
+    if len(blockchain) < 1:
+      return None
     return blockchain[-1]
 
 
 # append the previous value and new value to the blockchain
 def add_value(transaction_amount, last_transaction=[1]):
+    
+    if last_transaction == None:
+      last_transaction = [1]
     blockchain.append([last_transaction, transaction_amount])
 
 
@@ -48,5 +53,6 @@ while True:
         break
     else:
         print('Input was invalid, please pick a value from the list!')
+    print('choice registered!')
 
 print('Done')
