@@ -11,7 +11,7 @@ def blockchain_value():
 
 
 # append previous and new value to blockchain
-def add_value(transaction_amount, last_transaction=[1]):
+def add_transaction(transaction_amount, last_transaction=[1]):
     if last_transaction == None:
         last_transaction = [1]
     blockchain.append([last_transaction, transaction_amount])
@@ -59,26 +59,12 @@ def verify_chain():
         else:
             is_valid = False
             break
-
-    # for block in blockchain:
-    #     if block_index == 0:
-    #         block_index += 1
-    #         continue
-    #     elif block[0] == blockchain[block_index - 1]:
-    #         print(block[0], 'BLOCK 0')
-    #         print(blockchain, 'BLOCKCHAIN')
-    #         print(blockchain[block_index - 1], 'BLOCKCHAIN 0')
-    #         is_valid = True
-    #     else:
-    #         is_valid = False
-    #         break
-    #     block_index += 1
     return is_valid
 
 
 # Get user input, add it to the blockchain.
 tx_amount = get_transaction_value()
-add_value(tx_amount)
+add_transaction(tx_amount)
 for block in blockchain:
     print(block[0], 'BLOCK 0')
     print(blockchain, 'BLOCKCHAIN')
@@ -96,7 +82,7 @@ while waiting_for_input:
     user_choice = get_user_choice()
     if user_choice == '1':
         tx_amount = get_transaction_value()
-        add_value(tx_amount, blockchain_value())
+        add_transaction(tx_amount, blockchain_value())
     elif user_choice == '2':
         print_blockchain_elements()
     elif user_choice == 'h':
