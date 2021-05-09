@@ -18,9 +18,9 @@ for name in names:
 
 # clear all names from list
 while names:
-  if len(names) == 1:
+    if len(names) == 1:
+        names.pop()
+        break
     names.pop()
-    break
-  names.pop()
 
 print('\nthe names list has been cleared:\n\n\t names =', names, '\n')
