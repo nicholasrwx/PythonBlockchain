@@ -87,7 +87,7 @@ while waiting_for_input:
     elif user_choice == 'h':
         if len(blockchain) >= 1:
             blockchain[0] = {'previous_hash': '', 'index': 0, 'transactions': [
-                {'sender': Chris, 'recipient': Max, 'amount': 100.0}]}
+                {'sender': 'Chris', 'recipient': 'Max', 'amount': 100.0}]}
     elif user_choice == 'q':
         waiting_for_input = False
     else:
