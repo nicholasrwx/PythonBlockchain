@@ -56,7 +56,10 @@ def print_blockchain_elements():
 
 # Verify new transaction, with previous block
 def verify_chain():
-
+    for (index, block) in enumerate(blockchain):
+        if index == 0:
+            continue
+        if block['previous_hash'] != hash_block(blockchain[index - 1])
 
 
 
