@@ -4,8 +4,9 @@ blockchain = [genesis_block]
 open_transactions = []
 owner = 'Max'
 
+
 def hash_block(block):
-    return '-'.join([str(block[key]) for key in block]) 
+    return '-'.join([str(block[key]) for key in block])
 
 
 # append previous and new value to blockchain
@@ -64,8 +65,6 @@ def verify_chain():
     return True
 
 
-
-
 waiting_for_input = True
 
 while waiting_for_input:
@@ -82,12 +81,13 @@ while waiting_for_input:
         add_transaction(recipient, amount=amount)
         print(open_transactions, 'OPEN TRANSACTIONS')
     elif user_choice == '2':
-      mine_block()
+        mine_block()
     elif user_choice == '3':
         print_blockchain_elements()
     elif user_choice == 'h':
         if len(blockchain) >= 1:
-            blockchain[0] = [2]
+            blockchain[0] = {'previous_hash': '', 'index': 0, 'transactions': [
+                {'sender': Chris, 'recipient': Max, 'amount': 100.0}]}
     elif user_choice == 'q':
         waiting_for_input = False
     else:
