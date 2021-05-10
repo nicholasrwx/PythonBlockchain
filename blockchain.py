@@ -4,13 +4,8 @@ blockchain = [genesis_block]
 open_transactions = []
 owner = 'Max'
 
-# return the last value in the blockchain
-
-
-def blockchain_value():
-    if len(blockchain) < 1:
-        return None
-    return blockchain[-1]
+def hash_block(block):
+    return '-'.join([str(block[key]) for key in block]) 
 
 
 # append previous and new value to blockchain
@@ -27,7 +22,7 @@ def mine_block():
   # a block should be a dictionary
   # previous hash -> summarized value of the previous block
     last_block = blockchain[-1]
-    hashed_block = '-'.join([str(last_block[key]) for key in last_block])
+    hashed_block = hash_block(last_block)
 
     print(hashed_block, 'HASHED BLOCK')
     block = {'previous_hash': 'xyz', 'index': len(
@@ -61,21 +56,7 @@ def print_blockchain_elements():
 
 # Verify new transaction, with previous block
 def verify_chain():
-    # block_index = 0
-    is_valid = True
-    for block_index in range(len(blockchain)):
-        # Skip the first block, as there is nothing to compare to
-        if block_index == 0:
-            continue
-        elif blockchain[block_index][0] == blockchain[block_index - 1]:
-            print(block[0], 'BLOCK 0')
-            print(blockchain, 'BLOCKCHAIN')
-            print(blockchain[block_index - 1], 'BLOCKCHAIN 0')
-            is_valid = True
-        else:
-            is_valid = False
-            break
-    return is_valid
+
 
 
 
