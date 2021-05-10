@@ -59,7 +59,10 @@ def verify_chain():
     for (index, block) in enumerate(blockchain):
         if index == 0:
             continue
-        if block['previous_hash'] != hash_block(blockchain[index - 1])
+        if block['previous_hash'] != hash_block(blockchain[index - 1]):
+            return False
+    return True
+
 
 
 
@@ -89,12 +92,12 @@ while waiting_for_input:
         waiting_for_input = False
     else:
         print('Input was invalid, please pick a value from the list!')
-    # if not verify_chain():
-    #     print_blockchain_elements()
-    #     print('Invalid blockchain!')
-    #     print(blockchain, 'BLOCKCHAIN')
-    #     print(blockchain[0], 'BLOCKCHAIN 0')
-    #     break
+    if not verify_chain():
+        print_blockchain_elements()
+        print('Invalid blockchain!')
+        print(blockchain, 'BLOCKCHAIN')
+        print(blockchain[0], 'BLOCKCHAIN 0')
+        break
 
 # executes once your done with a while loop
 else:
