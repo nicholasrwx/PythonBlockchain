@@ -5,9 +5,35 @@ open_transactions = []
 owner = 'Max'
 participants = {'Max'}
 
-#Creates a hash of key values from a block, to use for block verification
+# Creates a hash of key values from a block, to use for block verification
+
+
 def hash_block(block):
     return '-'.join([str(block[key]) for key in block])
+
+# Nested list comprehension
+# GET an amount for a given transaction
+# FOR all transactions in a block
+# IF the sender is a participant
+# You can read this forwards, starting from the smallest piece to the largest piece
+
+
+def get_balance(participant):
+    tx_sender = [[tx['amount'] for tx in block['transactions']
+                  if tx['sender'] == participant] for block in blockchain]
+    amount_sent = 0
+    for tx in tx_sender:
+        # check to see if array isn't empty
+        if len(tx) > 0:
+            # tx[0] is needed because each element in tx_sender is an array
+            amount_sent += tx[0]
+    tx_recipient = [[tx['amount'] for tx in block['transactions']
+                     if tx['recipient'] == participant] for block in blockchain]
+    amount_received = 0
+    for tx in tx_recipient:
+        if len(tx) > 0:
+            amount_received += tx[0]
+    return amount_sent, amount_received
 
 
 # append previous and new value to blockchain
@@ -21,6 +47,7 @@ def add_transaction(recipient, sender=owner, amount=[1.0]):
     participants.add(sender)
     participants.add(recipient)
 
+
 def mine_block():
   # a block should be a dictionary
   # previous hash -> summarized value of the previous block
@@ -28,9 +55,10 @@ def mine_block():
     hashed_block = hash_block(last_block)
 
     print(hashed_block, 'HASHED BLOCK')
-    block = {'previous_hash': 'xyz', 'index': len(
+    block = {'previous_hash': hashed_block, 'index': len(
         blockchain), 'transactions': open_transactions}
     blockchain.append(block)
+    return True
 
 
 # User input function
@@ -62,7 +90,7 @@ def verify_chain():
     for (index, block) in enumerate(blockchain):
         if index == 0:
             continue
-        #if hash's are not the same, chain has been altered
+        # if hash's are not the same, chain has been altered
         if block['previous_hash'] != hash_block(blockchain[index - 1]):
             return False
     return True
@@ -85,7 +113,8 @@ while waiting_for_input:
         add_transaction(recipient, amount=amount)
         print(open_transactions, 'OPEN TRANSACTIONS')
     elif user_choice == '2':
-        mine_block()
+        if mine_block():
+            open_transactions = []
     elif user_choice == '3':
         print_blockchain_elements()
     elif user_choice == '4':
@@ -104,6 +133,7 @@ while waiting_for_input:
         print(blockchain, 'BLOCKCHAIN')
         print(blockchain[0], 'BLOCKCHAIN 0')
         break
+    print(get_balance('Max'))
 
 # executes once your done with a while loop
 else:
