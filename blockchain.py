@@ -3,8 +3,9 @@ genesis_block = {'previous_hash': '', 'index': 0, 'transactions': []}
 blockchain = [genesis_block]
 open_transactions = []
 owner = 'Max'
+participants = {'Max'}
 
-
+#Creates a hash of key values from a block, to use for block verification
 def hash_block(block):
     return '-'.join([str(block[key]) for key in block])
 
@@ -17,7 +18,8 @@ def hash_block(block):
 def add_transaction(recipient, sender=owner, amount=[1.0]):
     transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
     open_transactions.append(transaction)
-
+    participants.add(sender)
+    participants.add(recipient)
 
 def mine_block():
   # a block should be a dictionary
@@ -60,6 +62,7 @@ def verify_chain():
     for (index, block) in enumerate(blockchain):
         if index == 0:
             continue
+        #if hash's are not the same, chain has been altered
         if block['previous_hash'] != hash_block(blockchain[index - 1]):
             return False
     return True
@@ -72,6 +75,7 @@ while waiting_for_input:
     print('1: Add a new transaction value')
     print('2: Mine a new block')
     print('3: Output the blockchain blocks')
+    print('4: Output participants')
     print('h: Manipulate the chain')
     print('q: Quit')
     user_choice = get_user_choice()
@@ -84,6 +88,8 @@ while waiting_for_input:
         mine_block()
     elif user_choice == '3':
         print_blockchain_elements()
+    elif user_choice == '4':
+        print(participants)
     elif user_choice == 'h':
         if len(blockchain) >= 1:
             blockchain[0] = {'previous_hash': '', 'index': 0, 'transactions': [
