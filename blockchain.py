@@ -23,7 +23,8 @@ def hash_block(block):
 def get_balance(participant):
     tx_sender = [[tx['amount'] for tx in block['transactions']
                   if tx['sender'] == participant] for block in blockchain]
-    open_tx_sender = [tx['amount'] for tx in open_transactions if tx['sender'] == participant]
+    open_tx_sender = [tx['amount']
+                      for tx in open_transactions if tx['sender'] == participant]
     tx_sender.append(open_tx_sender)
     amount_sent = 0
     for tx in tx_sender:
@@ -40,7 +41,7 @@ def get_balance(participant):
     return amount_received - amount_sent
 
 
-#check senders balance
+# check senders balance
 def verify_transaction(transaction):
     sender_balance = get_balance(transaction['sender'])
     return sender_balance >= transaction['amount']
@@ -50,6 +51,8 @@ def verify_transaction(transaction):
 #   :sender: The sender of the coins
 #   :recipient: The recipient of the coins.
 #   :amount: The amount of coins sent with the transaction (default = 1.0)
+
+
 def add_transaction(recipient, sender=owner, amount=[1.0]):
     transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
     if verify_transaction(transaction):
@@ -68,12 +71,13 @@ def mine_block():
     reward_transaction = {
         'sender': 'MINING',
         'recipient': owner,
-        'amount': MINING_REWARD    
+        'amount': MINING_REWARD
     }
-    open_transactions.append(reward_transaction)
+    copied_transactions = open_transactions[:]
+    copied_transactions.append(reward_transaction)
     print(hashed_block, 'HASHED BLOCK')
     block = {'previous_hash': hashed_block, 'index': len(
-        blockchain), 'transactions': open_transactions}
+        blockchain), 'transactions': copied_transactions}
     blockchain.append(block)
     return True
 
@@ -126,8 +130,8 @@ while waiting_for_input:
     user_choice = get_user_choice()
     if user_choice == '1':
         tx_data = get_transaction_value()
-        recipient, amount = tx_data #unpack/destructure tx_data tuple
-        #add transaction amount to the blockchain
+        recipient, amount = tx_data  # unpack/destructure tx_data tuple
+        # add transaction amount to the blockchain
         if add_transaction(recipient, amount=amount):
             print('Added transaction!')
         else:
