@@ -8,7 +8,7 @@ person = [{'name': 'Jane', 'age': 20, 'hobbies': ['tennis', 'swimming', 'nascar'
               'tea', 'classical music', 'witty banter']},
           {'name': 'Roy', 'age': 29, 'hobbies': ['heavy metal', 'trucks', 'bbq and beers with the boys']}]
 
-print ('person list:\n')
+print('person list:\n')
 print(person, '\n\n')
 
 
@@ -34,6 +34,5 @@ print('original list of persons remains unaltered:\n', list_of_persons, '\n\n')
 
 # 5 unpack the persons of the original list into different vars and output them
 values = (P1, P2, P3, P4, P5) = person
- 
-[print(el) for el in values]
 
+[print(el) for el in values]
