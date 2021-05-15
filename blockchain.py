@@ -30,18 +30,10 @@ def get_balance(participant):
     amount_sent = functools.reduce(
         lambda tx_sum, tx_amt: tx_sum + tx_amt[0] if len(tx_amt) > 0 else 0, tx_sender, 0)
     #   ^Fn    ^result ^elem   ^operation         ^condition                 ^list      ^initVal
-    amount_sent = 0
-    for tx in tx_sender:
-        # check to see if array isn't empty
-        if len(tx) > 0:
-            # tx[0] is needed because each element in tx_sender is an array
-            amount_sent += tx[0]
     tx_recipient = [[tx['amount'] for tx in block['transactions']
                      if tx['recipient'] == participant] for block in blockchain]
-    amount_received = 0
-    for tx in tx_recipient:
-        if len(tx) > 0:
-            amount_received += tx[0]
+    amount_received = functools.reduce(
+        lambda tx_sum, tx_amt: tx_sum + tx_amt[0] if len(tx_amt) > 0 else 0, tx_recipient, 0)
     return amount_received - amount_sent
 
 
