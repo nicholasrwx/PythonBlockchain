@@ -1,5 +1,6 @@
-# Initialize empty blockchain list
+import functools
 
+# Initialize
 MINING_REWARD = 10
 genesis_block = {'previous_hash': '', 'index': 0, 'transactions': []}
 blockchain = [genesis_block]
@@ -26,6 +27,9 @@ def get_balance(participant):
     open_tx_sender = [tx['amount']
                       for tx in open_transactions if tx['sender'] == participant]
     tx_sender.append(open_tx_sender)
+    amount_sent = functools.reduce(
+        lambda tx_sum, tx_amt: tx_sum + tx_amt[0] if len(tx_amt) > 0 else 0, tx_sender, 0)
+    #   ^Fn    ^result ^elem   ^operation         ^condition                 ^list      ^initVal
     amount_sent = 0
     for tx in tx_sender:
         # check to see if array isn't empty
