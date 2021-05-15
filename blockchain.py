@@ -168,7 +168,7 @@ while waiting_for_input:
         print(blockchain, 'BLOCKCHAIN')
         print(blockchain[0], 'BLOCKCHAIN 0')
         break
-    print(get_balance('Max'))
+    print('Balance of {}: {:6.2f}'.format('Max', get_balance('Max')))
 
 # executes once your done with a while loop
 else:
