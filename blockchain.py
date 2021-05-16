@@ -1,5 +1,6 @@
 import functools
 import hashlib
+import json
 
 # Initialize
 MINING_REWARD = 10
@@ -13,7 +14,17 @@ participants = {'Max'}
 
 
 def hash_block(block):
-    return hashlib.sha256
+    #this will take your dictionary pseudo hash, 
+    # convert it into a JSON string, then hash it
+    # using the sha256 algorithm
+    # we do this because it only works on strings, not dictionaries.
+    #we call encode() in it, to format it to UTF-8, which is the format sha256 needs 
+    #The string is converted initially into a byte hash
+    #we need hexdigest() to conver it into a string hash
+    
+    
+    return hashlib.sha256(json.dumps(block).encode()).hexdigest()
+
     # return '-'.join([str(block[key]) for key in block])
 
 # Nested list comprehension
