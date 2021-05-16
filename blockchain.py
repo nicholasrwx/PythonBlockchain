@@ -1,4 +1,5 @@
 import functools
+import hashlib
 
 # Initialize
 MINING_REWARD = 10
@@ -12,7 +13,8 @@ participants = {'Max'}
 
 
 def hash_block(block):
-    return '-'.join([str(block[key]) for key in block])
+    return hashlib.sha256
+    # return '-'.join([str(block[key]) for key in block])
 
 # Nested list comprehension
 # GET an amount for a given transaction
