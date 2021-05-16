@@ -8,7 +8,7 @@ def normal_function(*args):
   
   for el in value:
     result = func(el)
-    print('{:-^20}'.format(result))
+    print('{:-^20.2f}'.format(result))
 
 #Function -> for argument
 def test_func(arg):
