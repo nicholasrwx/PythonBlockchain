@@ -91,6 +91,7 @@ def mine_block():
   # previous hash -> summarized value of the previous block
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
+    proof = proof_of_work()
     reward_transaction = {
         'sender': 'MINING',
         'recipient': owner,
@@ -100,7 +101,7 @@ def mine_block():
     copied_transactions.append(reward_transaction)
     print(hashed_block, 'HASHED BLOCK')
     block = {'previous_hash': hashed_block, 'index': len(
-        blockchain), 'transactions': copied_transactions}
+        blockchain), 'transactions': copied_transactions, 'proof': proof}
     blockchain.append(block)
     return True
 
