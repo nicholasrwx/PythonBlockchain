@@ -10,6 +10,15 @@ open_transactions = []
 owner = 'Max'
 participants = {'Max'}
 
+def valid_proof(transactions, last_hash, proof):
+    guess = (str(transactions) + str(last_hash) + str(proof)).encode()
+    guess_hash = hl.sha256(guess)
+    print(guess_hash, "GUESS HASH")
+    
+
+
+
+
 # Creates a hash of key values from a block, to use for block verification
 
 
