@@ -1,5 +1,5 @@
-import functools
-import hashlib
+from functools import reduce
+import hashlib as hl
 import json
 
 # Initialize
@@ -14,16 +14,15 @@ participants = {'Max'}
 
 
 def hash_block(block):
-    #this will take your dictionary pseudo hash, 
+    # this will take your dictionary pseudo hash,
     # convert it into a JSON string, then hash it
     # using the sha256 algorithm
     # we do this because it only works on strings, not dictionaries.
-    #we call encode() in it, to format it to UTF-8, which is the format sha256 needs 
-    #The string is converted initially into a byte hash
-    #we need hexdigest() to conver it into a string hash
-    
-    
-    return hashlib.sha256(json.dumps(block).encode()).hexdigest()
+    # we call encode() in it, to format it to UTF-8, which is the format sha256 needs
+    # The string is converted initially into a byte hash
+    # we need hexdigest() to conver it into a string hash
+
+    return hl.sha256(json.dumps(block).encode()).hexdigest()
 
     # return '-'.join([str(block[key]) for key in block])
 
@@ -41,13 +40,12 @@ def get_balance(participant):
                       for tx in open_transactions if tx['sender'] == participant]
     tx_sender.append(open_tx_sender)
     print(tx_sender)
-    amount_sent = functools.reduce(
-        lambda tx_sum, tx_amt: tx_sum + sum(tx_amt) if len(tx_amt) > 0 else tx_sum + 0, tx_sender, 0)
-    #   ^Fn    ^result ^elem   ^operation           ^condition                          ^list      ^initVal
+    amount_sent = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
+                         if len(tx_amt) > 0 else tx_sum + 0, tx_sender, 0)
     tx_recipient = [[tx['amount'] for tx in block['transactions']
                      if tx['recipient'] == participant] for block in blockchain]
-    amount_received = functools.reduce(
-        lambda tx_sum, tx_amt: tx_sum + sum(tx_amt) if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
+    amount_received = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
+                             if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
     return amount_received - amount_sent
 
 
