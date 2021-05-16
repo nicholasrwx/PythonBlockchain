@@ -14,9 +14,15 @@ def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
     guess_hash = hl.sha256(guess)
     print(guess_hash, "GUESS HASH")
-    
+    return guess_hash[0:2] == '00'
 
-
+def proof_of_work():
+    last_block = blockchain[-1]
+    last_hash = hash_block(last_block) #recalculating a previous block, storing it in last_hash
+    proof = 0
+    while valid_proof(open_transactions, last_hash, proof):
+        proof += 1 
+    return proof
 
 
 # Creates a hash of key values from a block, to use for block verification
