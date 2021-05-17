@@ -1,16 +1,18 @@
 from functools import reduce
 from collections import OrderedDict
 import hashlib as hl
-import json
+from hash_util import hash_string_256, hash_block
 
 
 # Initialize
 MINING_REWARD = 10
-genesis_block = {'previous_hash': '', 'index': 0, 'transactions': [], 'proof': 100}
+genesis_block = {'previous_hash': '',
+                 'index': 0, 'transactions': [], 'proof': 100}
 blockchain = [genesis_block]
 open_transactions = []
 owner = 'Max'
 participants = {'Max'}
+
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
@@ -18,30 +20,16 @@ def valid_proof(transactions, last_hash, proof):
     print(guess_hash, "GUESS HASH")
     return guess_hash[0:2] == '00'
 
+
 def proof_of_work():
     last_block = blockchain[-1]
-    last_hash = hash_block(last_block) #recalculating a previous block, storing it in last_hash
+    # recalculating a previous block, storing it in last_hash
+    last_hash = hash_block(last_block)
     proof = 0
     while not valid_proof(open_transactions, last_hash, proof):
-        proof += 1 
+        proof += 1
     return proof
 
-
-# Creates a hash of key values from a block, to use for block verification
-
-
-def hash_block(block):
-    # this will take your dictionary pseudo hash,
-    # convert it into a JSON string, then hash it
-    # using the sha256 algorithm
-    # we do this because it only works on strings, not dictionaries.
-    # we call encode() in it, to format it to UTF-8, which is the format sha256 needs
-    # The string is converted initially into a byte hash
-    # we need hexdigest() to conver it into a string hash
-
-    return hl.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
-
-    # return '-'.join([str(block[key]) for key in block])
 
 # Nested list comprehension
 # GET an amount for a given transaction
@@ -79,10 +67,11 @@ def verify_transaction(transaction):
 
 
 def add_transaction(recipient, sender=owner, amount=[1.0]):
-#    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
-#OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are 
-#otherwise, unless altered, Normally unordered
-    transaction = OrderedDict([('sender', sender), ('recipient', recipient), ('amount', amount)])
+    #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
+    # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
+    # otherwise, unless altered, Normally unordered
+    transaction = OrderedDict(
+        [('sender', sender), ('recipient', recipient), ('amount', amount)])
     if verify_transaction(transaction):
         open_transactions.append(transaction)
         participants.add(sender)
@@ -102,7 +91,8 @@ def mine_block():
     #     'recipient': owner,
     #     'amount': MINING_REWARD
     # }
-    reward_transaction = OrderedDict([('sender', 'MINING'), ('recipient', owner), ('amount', MINING_REWARD)])
+    reward_transaction = OrderedDict(
+        [('sender', 'MINING'), ('recipient', owner), ('amount', MINING_REWARD)])
     copied_transactions = open_transactions[:]
     copied_transactions.append(reward_transaction)
     print(hashed_block, 'HASHED BLOCK')
@@ -144,10 +134,10 @@ def verify_chain():
         # if hash's are not the same, chain has been altered
         if block['previous_hash'] != hash_block(blockchain[index - 1]):
             return False
-            #we use [:-1] when validating, 
-            #to exclude the rewards from the validation process.
-            #they are added to the transactions for the new block. 
-            #they were never included or used in the POW HASH for the last block 
+            # we use [:-1] when validating,
+            # to exclude the rewards from the validation process.
+            # they are added to the transactions for the new block.
+            # they were never included or used in the POW HASH for the last block
         if not valid_proof(block['transactions'][:-1], block['previous_hash'], block['proof']):
             print('Proof of work is invalid!')
             return False
