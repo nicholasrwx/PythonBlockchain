@@ -1,6 +1,8 @@
 from functools import reduce
+from collections import OrderedDict
 import hashlib as hl
 import json
+
 
 # Initialize
 MINING_REWARD = 10
@@ -37,7 +39,7 @@ def hash_block(block):
     # The string is converted initially into a byte hash
     # we need hexdigest() to conver it into a string hash
 
-    return hl.sha256(json.dumps(block).encode()).hexdigest()
+    return hl.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
 
     # return '-'.join([str(block[key]) for key in block])
 
@@ -77,7 +79,10 @@ def verify_transaction(transaction):
 
 
 def add_transaction(recipient, sender=owner, amount=[1.0]):
-    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
+#    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
+#OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are 
+#otherwise, unless altered, Normally unordered
+    transaction = OrderedDict([('sender', sender), ('recipient', recipient), ('amount', amount)])
     if verify_transaction(transaction):
         open_transactions.append(transaction)
         participants.add(sender)
