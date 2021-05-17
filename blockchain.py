@@ -4,7 +4,7 @@ import json
 
 # Initialize
 MINING_REWARD = 10
-genesis_block = {'previous_hash': '', 'index': 0, 'transactions': []}
+genesis_block = {'previous_hash': '', 'index': 0, 'transactions': [], 'proof': 100}
 blockchain = [genesis_block]
 open_transactions = []
 owner = 'Max'
@@ -137,6 +137,9 @@ def verify_chain():
             continue
         # if hash's are not the same, chain has been altered
         if block['previous_hash'] != hash_block(blockchain[index - 1]):
+            return False
+        if not valid_proof(block['transactions'][:-1], block['previous_hash'], block['proof']):
+            print('Proof of work is invalid!')
             return False
     return True
 
