@@ -20,7 +20,7 @@ def proof_of_work():
     last_block = blockchain[-1]
     last_hash = hash_block(last_block) #recalculating a previous block, storing it in last_hash
     proof = 0
-    while valid_proof(open_transactions, last_hash, proof):
+    while not valid_proof(open_transactions, last_hash, proof):
         proof += 1 
     return proof
 
@@ -138,6 +138,10 @@ def verify_chain():
         # if hash's are not the same, chain has been altered
         if block['previous_hash'] != hash_block(blockchain[index - 1]):
             return False
+            #we use [:-1] when validating, 
+            #to exclude the rewards from the validation process.
+            #they are added to the transactions for the new block. 
+            #they were never included or used in the POW HASH for the last block 
         if not valid_proof(block['transactions'][:-1], block['previous_hash'], block['proof']):
             print('Proof of work is invalid!')
             return False
