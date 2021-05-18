@@ -22,3 +22,30 @@
 # f.close()
 
 
+
+# read() always reads the entire file, 
+# where as readlines(), reads each line as separate, 
+# and will space them into a comma separated LIST.
+
+# f = open('demo.txt', mode='r')
+# file_content = f.readlines()
+# f.close()
+# for line in file_content:
+#   print(line[:-1]) 
+
+
+#readline() just reads a single line of the file.
+f = open('demo.txt', mode='r')
+print(f.readline())
+
+
+
+
+
+
+
+
+
+
+
+
