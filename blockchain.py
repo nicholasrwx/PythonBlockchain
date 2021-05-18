@@ -13,6 +13,13 @@ open_transactions = []
 owner = 'Max'
 participants = {'Max'}
 
+#save blockchain data in external file
+def save_data():
+    #use write mode, because we always want to overwrite blockchain, with new snapshot of data
+    with open('blockchain.txt', mode='w') as f:
+        f.write(blockchain)
+        f.write('\n')
+        f.write(open_transactions)
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
