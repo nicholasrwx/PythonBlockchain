@@ -35,11 +35,14 @@
 
 
 #readline() just reads a single line of the file.
-f = open('demo.txt', mode='r')
-print(f.readline())
-
-
-
+#with statement, stores the file into a variable, and closes when the block has finished execution
+with open('demo.txt', mode='r') as f:
+  print(f.readline())
+  
+  line = f.readline()
+  while line:
+    print(line)
+    line = f.readline()
 
 
 
