@@ -13,14 +13,14 @@ open_transactions = []
 owner = 'Max'
 participants = {'Max'}
 
-
+# concat values, encode them into UTF-8, hash values, check string for '00' at the begining
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
     guess_hash = hash_string_256(guess)
     print(guess_hash, "GUESS HASH")
     return guess_hash[0:2] == '00'
 
-
+#find last-block, hash it, pass transactions+hash+proof to validator 
 def proof_of_work():
     last_block = blockchain[-1]
     # recalculating a previous block, storing it in last_hash
