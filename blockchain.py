@@ -13,6 +13,17 @@ open_transactions = []
 owner = 'Max'
 participants = {'Max'}
 
+
+def load_data():
+    with open('blockchain.txt', mode='r') as f:
+      file_content = f.readlines()
+      global blockchain
+      global open_transactions
+      blockchain = file_content[0]
+      open_transactions = file_content[1]
+    
+load_data()
+
 #save blockchain data in external file
 def save_data():
     #use write mode, because we always want to overwrite blockchain, with new snapshot of data
