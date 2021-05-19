@@ -17,9 +17,9 @@ participants = {'Max'}
 def save_data():
     #use write mode, because we always want to overwrite blockchain, with new snapshot of data
     with open('blockchain.txt', mode='w') as f:
-        f.write(blockchain)
+        f.write(str(blockchain))
         f.write('\n')
-        f.write(open_transactions)
+        f.write(str(open_transactions))
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
@@ -106,6 +106,7 @@ def mine_block():
     block = {'previous_hash': hashed_block, 'index': len(
         blockchain), 'transactions': copied_transactions, 'proof': proof}
     blockchain.append(block)
+    save_data()
     return True
 
 
