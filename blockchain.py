@@ -17,18 +17,44 @@ participants = {'Max'}
 
 def load_data():
     with open('blockchain.txt', mode='r') as f:
-      file_content = f.readlines()
-      global blockchain
-      global open_transactions
-      blockchain = file_content[0]
-      open_transactions = file_content[1]
-    
-# load_data()
+        file_content = f.readlines()
+        global blockchain
+        global open_transactions
+        # converts json to python, and excludes \n which gets added in save_data, using [:-1]
+        blockchain = json.loads(file_content[0][:-1])
+        # updated_blockchain is used to put saved data, back into an OrderedDict
+        # for when the file is saved, OrderedDict is stripped from the blockchain transaction data
+        # but mined blocks already used it in the hashing algorithm
+        # if it is not replaced, when a hash is recalculated, it will not match the previous_hash string
+        updated_blockchain = []
+        for block in blockchain:
+            updated_block = {
+                'previous_hash': block['previous_hash'],
+                'index': block['index'],
+                'proof': block['proof'],
+                'transactions': [OrderedDict(
+                    [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
+            }
+            updated_blockchain.append(updated_block)
+        blockchain = updated_blockchain
+        # there is no new line after open_transactions, so we do not need [:-1]
+        open_transactions = json.loads(file_content[1])
+        updated_transactions = []
+        for tx in open_transactions:
+            updated_transaction = OrderedDict(
+                [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])])
+            updated_transactions.append(updated_transaction)
+            open_transactions = updated_transactions
 
-#save blockchain data in external file
+
+load_data()
+
+# save blockchain data in external file
+
+
 def save_data():
-    #use write mode, because we always want to overwrite blockchain, with new snapshot of data
     with open('blockchain.txt', mode='w') as f:
+        # use write mode, because we always want to overwrite blockchain, with new snapshot of data
         f.write(json.dumps(blockchain))
         f.write('\n')
         f.write(json.dumps(open_transactions))
@@ -36,6 +62,7 @@ def save_data():
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
+    print(guess, "GUESS GUESS GUES")
     guess_hash = hash_string_256(guess)
     print(guess_hash, "GUESS HASH")
     return guess_hash[0:2] == '00'
@@ -96,6 +123,7 @@ def add_transaction(recipient, sender=owner, amount=[1.0]):
         open_transactions.append(transaction)
         participants.add(sender)
         participants.add(recipient)
+        save_data()
         return True
     return False
 
@@ -119,7 +147,6 @@ def mine_block():
     block = {'previous_hash': hashed_block, 'index': len(
         blockchain), 'transactions': copied_transactions, 'proof': proof}
     blockchain.append(block)
-    save_data()
     return True
 
 
@@ -147,7 +174,11 @@ def print_blockchain_elements():
         print('-' * 20)
 
 
-# Verify new transaction, with previous block
+# Verify chain, runs after every selection is completed
+# it compares every block in the current chain, with the previous block.
+# it does not perform proof of work, that only happens when a block is mined.
+# it uses the nonce however to make sure all the pow checkout, as is designed,
+# so its easy to verify, but hard to solve.
 def verify_chain():
     for (index, block) in enumerate(blockchain):
         if index == 0:
@@ -193,6 +224,7 @@ while waiting_for_input:
     elif user_choice == '2':
         if mine_block():
             open_transactions = []
+            save_data()
     elif user_choice == '3':
         print_blockchain_elements()
     elif user_choice == '4':
