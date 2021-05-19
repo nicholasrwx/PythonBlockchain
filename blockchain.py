@@ -1,8 +1,9 @@
 from functools import reduce
 from collections import OrderedDict
-import hashlib as hl
 from hash_util import hash_string_256, hash_block
 
+import hashlib as hl
+import json
 
 # Initialize
 MINING_REWARD = 10
@@ -22,15 +23,16 @@ def load_data():
       blockchain = file_content[0]
       open_transactions = file_content[1]
     
-load_data()
+# load_data()
 
 #save blockchain data in external file
 def save_data():
     #use write mode, because we always want to overwrite blockchain, with new snapshot of data
     with open('blockchain.txt', mode='w') as f:
-        f.write(str(blockchain))
+        f.write(json.dumps(blockchain))
         f.write('\n')
-        f.write(str(open_transactions))
+        f.write(json.dumps(open_transactions))
+
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
