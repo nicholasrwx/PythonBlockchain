@@ -18,12 +18,25 @@ participants = {'Max'}
 
 
 def load_data():
-    with open('blockchain.p', mode='rb') as f:
-        #use mode=r and file_name.txt for json/txt
-        #use mode=rb and file_name.p for pickling
+    with open('blockchain.txt', mode='r') as f:
+        # use mode=r and file_name.txt for json/txt
+        # use mode=rb and file_name.p for pickling
+
+        # PICKLE #######
+        # file_content = pickle.loads(f.read())
+        ################
+
         file_content = f.readlines()
+
+        print(file_content)
         global blockchain
         global open_transactions
+
+        # PICKLE ########
+        # blockchain = file_content['chain']
+        # open_transactions = file_content['ot']
+        #################
+
         # converts json to python, and excludes \n which gets added in save_data, using [:-1]
         blockchain = json.loads(file_content[0][:-1])
         # updated_blockchain is used to put saved data, back into an OrderedDict
@@ -53,26 +66,25 @@ def load_data():
 
 load_data()
 
+
 # save blockchain data in external file
-
-
 def save_data():
-    with open('blockchain.p', mode='wb') as f:
+    with open('blockchain.txt', mode='w') as f:
         # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
         # use file_name.txt
-        # f.write(json.dumps(blockchain))
-        # f.write('\n')
-        # f.write(json.dumps(open_transactions))
-        
-        #to write to binary instead of default txt, you need mode=wb
-        #you can save the file as file_name.p instead of file_name.txt
-        #it isn't required but you can
-        save_data = {
-            'chain': blockchain,
-            'ot': open_transactions,
+        f.write(json.dumps(blockchain))
+        f.write('\n')
+        f.write(json.dumps(open_transactions))
 
-        }
-        f.write(pickle.dumps(save_data))
+        # to write to binary instead of default txt, you need mode=wb
+        # you can save the file as file_name.p instead of file_name.txt
+        # it isn't required but you can
+        # save_data = {
+        #     'chain': blockchain,
+        #     'ot': open_transactions,
+
+        # }
+        # f.write(pickle.dumps(save_data))
 
 
 def valid_proof(transactions, last_hash, proof):
