@@ -4,6 +4,8 @@ from hash_util import hash_string_256, hash_block
 
 import hashlib as hl
 import json
+import pickle
+
 
 # Initialize
 MINING_REWARD = 10
@@ -16,7 +18,9 @@ participants = {'Max'}
 
 
 def load_data():
-    with open('blockchain.txt', mode='r') as f:
+    with open('blockchain.p', mode='rb') as f:
+        #use mode=r and file_name.txt for json/txt
+        #use mode=rb and file_name.p for pickling
         file_content = f.readlines()
         global blockchain
         global open_transactions
@@ -53,11 +57,22 @@ load_data()
 
 
 def save_data():
-    with open('blockchain.txt', mode='w') as f:
-        # use write mode, because we always want to overwrite blockchain, with new snapshot of data
-        f.write(json.dumps(blockchain))
-        f.write('\n')
-        f.write(json.dumps(open_transactions))
+    with open('blockchain.p', mode='wb') as f:
+        # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
+        # use file_name.txt
+        # f.write(json.dumps(blockchain))
+        # f.write('\n')
+        # f.write(json.dumps(open_transactions))
+        
+        #to write to binary instead of default txt, you need mode=wb
+        #you can save the file as file_name.p instead of file_name.txt
+        #it isn't required but you can
+        save_data = {
+            'chain': blockchain,
+            'ot': open_transactions,
+
+        }
+        f.write(pickle.dumps(save_data))
 
 
 def valid_proof(transactions, last_hash, proof):
