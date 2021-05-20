@@ -18,50 +18,60 @@ participants = {'Max'}
 
 
 def load_data():
-    with open('blockchain.txt', mode='r') as f:
-        # use mode=r and file_name.txt for json/txt
-        # use mode=rb and file_name.p for pickling
+    try:
+        with open('blockchain.txt', mode='r') as f:
+            # use mode=r and file_name.txt for json/txt
+            # use mode=rb and file_name.p for pickling
 
-        # PICKLE #######
-        # file_content = pickle.loads(f.read())
-        ################
+            # PICKLE #######
+            # file_content = pickle.loads(f.read())
+            ################
 
-        file_content = f.readlines()
+            file_content = f.readlines()
 
-        print(file_content)
-        global blockchain
-        global open_transactions
+            print(file_content)
+            global blockchain
+            global open_transactions
 
-        # PICKLE ########
-        # blockchain = file_content['chain']
-        # open_transactions = file_content['ot']
-        #################
+            # PICKLE ########
+            # blockchain = file_content['chain']
+            # open_transactions = file_content['ot']
+            #################
 
-        # converts json to python, and excludes \n which gets added in save_data, using [:-1]
-        blockchain = json.loads(file_content[0][:-1])
-        # updated_blockchain is used to put saved data, back into an OrderedDict
-        # for when the file is saved, OrderedDict is stripped from the blockchain transaction data
-        # but mined blocks already used it in the hashing algorithm
-        # if it is not replaced, when a hash is recalculated, it will not match the previous_hash string
-        updated_blockchain = []
-        for block in blockchain:
-            updated_block = {
-                'previous_hash': block['previous_hash'],
-                'index': block['index'],
-                'proof': block['proof'],
-                'transactions': [OrderedDict(
-                    [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
-            }
-            updated_blockchain.append(updated_block)
-        blockchain = updated_blockchain
-        # there is no new line after open_transactions, so we do not need [:-1]
-        open_transactions = json.loads(file_content[1])
-        updated_transactions = []
-        for tx in open_transactions:
-            updated_transaction = OrderedDict(
-                [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])])
-            updated_transactions.append(updated_transaction)
-            open_transactions = updated_transactions
+            # converts json to python, and excludes \n which gets added in save_data, using [:-1]
+            blockchain = json.loads(file_content[0][:-1])
+            # updated_blockchain is used to put saved data, back into an OrderedDict
+            # for when the file is saved, OrderedDict is stripped from the blockchain transaction data
+            # but mined blocks already used it in the hashing algorithm
+            # if it is not replaced, when a hash is recalculated, it will not match the previous_hash string
+            updated_blockchain = []
+            for block in blockchain:
+                updated_block = {
+                    'previous_hash': block['previous_hash'],
+                    'index': block['index'],
+                    'proof': block['proof'],
+                    'transactions': [OrderedDict(
+                        [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
+                }
+                updated_blockchain.append(updated_block)
+            blockchain = updated_blockchain
+            # there is no new line after open_transactions, so we do not need [:-1]
+            open_transactions = json.loads(file_content[1])
+            updated_transactions = []
+            for tx in open_transactions:
+                updated_transaction = OrderedDict(
+                    [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])])
+                updated_transactions.append(updated_transaction)
+                open_transactions = updated_transactions
+    except IOError:
+        print('File not found!')
+    except ValueError:
+        print('Value Error!')
+    except:
+        print('Wildcard!')
+    finally:
+        print('Cleanup!')
+         
 
 
 load_data()
