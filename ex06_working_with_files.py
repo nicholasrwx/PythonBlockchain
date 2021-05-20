@@ -1,55 +1,46 @@
-import os
+import json
+import pickle
 
-# 1) Write a short Python script which queries the user for input
-# (infinite loop with exit possibility) and writes the input to a file.
-# 2) Add another option to your user interface:
-# The user should be able to output the data stored in the file in the terminal.
-# 3) Store user input in a list (instead of directly adding it to the file)
-# and write that list to the file both with pickle and json.
-# 4) Adjust the logic to load the file content to work with pickled/ json data.
-
-var = ''
 user_input_list = []
-
-# initial check to see if file exists, if not it creates the file
-with open('response.txt', mode='w') as f:
-    f.close()
-
-# input response
 
 
 def response():
     response = input('What is your secret? ')
     return response
 
-# wrties response to file
-# or sets var to q
+# writes response to file
 
 
-def edit_file():
-    global var
-    value = response()
-    if value != 'q':
-        with open('response.txt', mode='a') as f:
-            f.write(value)
-            f.write('\n')
-            f.close()
-    else:
-        var = value
+def edit_file(messages):
+    with open('response.txt', mode='w') as f:
+        f.write(json.dumps(messages))
+        f.close()
+    with open('response.p', mode='wb') as f:
+        f.write(pickle.dumps(messages))
+        f.close()
 
 
 def display_file():
     with open('response.txt', mode='r') as f:
-        messages = f.readlines()
-        for message in messages:
-            print(message[:-1])
+        values = f.readlines()
+        messages = json.loads(values[0])
+        print('.txt File Content:\n')
+        [print(message) for message in messages]
+        print('\n')
+        f.close()
+    with open('response.p', mode='rb') as f:
+        values = pickle.loads(f.read())
+        print(".p File Content:\n")
+        [print(value) for value in values]
         print('\n')
         f.close()
 
+
 def create_list():
-  value = response()
-  user_input_list.append(value)
-  print(user_input_list)
+    value = response()
+    user_input_list.append(value)
+    print(user_input_list)
+
 
 user_input = True
 
@@ -61,17 +52,13 @@ while user_input:
     user_response = input('\n please make your selection: ')
     print('\n')
     if user_response == '1':
-        #edit_file()
+        # edit_file()
         create_list()
 
     if user_response == '2':
         display_file()
 
     if user_response == 'q':
+        if len(user_input_list) > 0:
+            edit_file(user_input_list)
         user_input = False
-
-os.remove('response.txt')
-print("Quitting! File Removed!")
-
-
-
