@@ -77,23 +77,26 @@ load_data()
 
 # save blockchain data in external file
 def save_data():
-    with open('blockchain.txt', mode='w') as f:
-        # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
-        # use file_name.txt
-        f.write(json.dumps(blockchain))
-        f.write('\n')
-        f.write(json.dumps(open_transactions))
+    try:
+        with open('blockchain.txt', mode='w') as f:
+            # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
+            # use file_name.txt
+            f.write(json.dumps(blockchain))
+            f.write('\n')
+            f.write(json.dumps(open_transactions))
 
-        # to write to binary instead of default txt, you need mode=wb
-        # you can save the file as file_name.p instead of file_name.txt
-        # it isn't required but you can
-        # save_data = {
-        #     'chain': blockchain,
-        #     'ot': open_transactions,
+            # to write to binary instead of default txt, you need mode=wb
+            # you can save the file as file_name.p instead of file_name.txt
+            # it isn't required but you can
+            # save_data = {
+            #     'chain': blockchain,
+            #     'ot': open_transactions,
 
-        # }
-        # f.write(pickle.dumps(save_data))
-
+            # }
+            # f.write(pickle.dumps(save_data))
+    except IOError:
+        print('Saving Failed')
+        
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
