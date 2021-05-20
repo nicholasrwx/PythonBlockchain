@@ -1,46 +1,40 @@
-#1) Write a short Python script which queries the user for input 
+import os
+
+# 1) Write a short Python script which queries the user for input
 # (infinite loop with exit possibility) and writes the input to a file.
+var = ''
 
-
-print('enter a response, or q to quit!')
-response = input('What is your secret? ')
-  
+# initial check to see if file exists, if not it creates the file
 with open('response.txt', mode='w') as f:
-  f.
+    f.close()
+
+# input response
 
 
-#open a file or 
-#create a file
-#write to it 
-#save when quit
+def response():
+    response = input('What is your secret? ')
+    return response
+
+# wrties response to file
+# or sets var to q
 
 
+def make_file():
+    global var
+    value = response()
+    if value != 'q':
+        with open('response.txt', mode='a') as f:
+            f.write(value)
+            f.write('\n')
+            f.close()
+    else:
+        var = value
 
 
-#2) Add another option to your user interface: 
-# The user should be able to output the data 
-# stored in the file in the terminal.
+# loops make_file function, until var == q, then quits the program
+while var != 'q':
+    print('enter a response, or q to quit!')
+    make_file()
 
-
-
-
-
-
-
-#3) Store user input in a list 
-# (instead of directly adding it to the file) 
-# and write that list to the file – both with pickle and json.
-
-
-
-
-
-
-
-#4) Adjust the logic to load the 
-# file content to work with pickled/ json data.
-
-
-
-
-
+os.remove('response.txt')
+print("Quitting! File Removed!")
