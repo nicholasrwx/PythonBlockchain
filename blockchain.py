@@ -9,15 +9,17 @@ import pickle
 
 # Initialize
 MINING_REWARD = 10
-genesis_block = {'previous_hash': '',
-                 'index': 0, 'transactions': [], 'proof': 100}
-blockchain = [genesis_block]
+
+blockchain = []
 open_transactions = []
 owner = 'Max'
 participants = {'Max'}
 
 
 def load_data():
+    global blockchain
+    global open_transactions
+
     try:
         with open('blockchain.txt', mode='r') as f:
             # use mode=r and file_name.txt for json/txt
@@ -30,8 +32,6 @@ def load_data():
             file_content = f.readlines()
 
             print(file_content)
-            global blockchain
-            global open_transactions
 
             # PICKLE ########
             # blockchain = file_content['chain']
@@ -64,14 +64,12 @@ def load_data():
                 updated_transactions.append(updated_transaction)
                 open_transactions = updated_transactions
     except IOError:
-        print('File not found!')
-    except ValueError:
-        print('Value Error!')
-    except:
-        print('Wildcard!')
+        genesis_block = {'previous_hash': '',
+                         'index': 0, 'transactions': [], 'proof': 100}
+        blockchain = [genesis_block]
+        open_transactions = []
     finally:
         print('Cleanup!')
-         
 
 
 load_data()
