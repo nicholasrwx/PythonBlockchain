@@ -46,11 +46,12 @@ def load_data():
             # if it is not replaced, when a hash is recalculated, it will not match the previous_hash string
             updated_blockchain = []
             for block in blockchain:
-                #helper variable
+                # helper variable
                 converted_tx = [OrderedDict(
-                        [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
-                #using the Block class to create a block
-                updated_block = Block(block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
+                    [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
+                # using the Block class to create a block
+                updated_block = Block(
+                    block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
                 updated_blockchain.append(updated_block)
             blockchain = updated_blockchain
             # there is no new line after open_transactions, so we do not need [:-1]
@@ -62,8 +63,7 @@ def load_data():
                 updated_transactions.append(updated_transaction)
                 open_transactions = updated_transactions
     except IOError:
-        genesis_block = {'previous_hash': '',
-                         'index': 0, 'transactions': [], 'proof': 100}
+        genesis_block = Block(0, '', [], 100, 0)
         blockchain = [genesis_block]
         open_transactions = []
     finally:
@@ -94,7 +94,7 @@ def save_data():
             # f.write(pickle.dumps(save_data))
     except IOError:
         print('Saving Failed')
-        
+
 
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
@@ -122,7 +122,7 @@ def proof_of_work():
 
 
 def get_balance(participant):
-    tx_sender = [[tx['amount'] for tx in block['transactions']
+    tx_sender = [[tx['amount'] for tx in block.transactions
                   if tx['sender'] == participant] for block in blockchain]
     open_tx_sender = [tx['amount']
                       for tx in open_transactions if tx['sender'] == participant]
@@ -130,7 +130,7 @@ def get_balance(participant):
     print(tx_sender)
     amount_sent = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
                          if len(tx_amt) > 0 else tx_sum + 0, tx_sender, 0)
-    tx_recipient = [[tx['amount'] for tx in block['transactions']
+    tx_recipient = [[tx['amount'] for tx in block.transactions
                      if tx['recipient'] == participant] for block in blockchain]
     amount_received = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
                              if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
@@ -180,8 +180,7 @@ def mine_block():
     copied_transactions = open_transactions[:]
     copied_transactions.append(reward_transaction)
     print(hashed_block, 'HASHED BLOCK')
-    block = {'previous_hash': hashed_block, 'index': len(
-        blockchain), 'transactions': copied_transactions, 'proof': proof}
+    block = Block(len(blockchain), hashed_block, copied_transactions, proof)
     blockchain.append(block)
     return True
 
@@ -220,13 +219,13 @@ def verify_chain():
         if index == 0:
             continue
         # if hash's are not the same, chain has been altered
-        if block['previous_hash'] != hash_block(blockchain[index - 1]):
+        if block.previous_hash != hash_block(blockchain[index - 1]):
             return False
             # we use [:-1] when validating,
             # to exclude the rewards from the validation process.
             # they are added to the transactions for the new block.
             # they were never included or used in the POW HASH for the last block
-        if not valid_proof(block['transactions'][:-1], block['previous_hash'], block['proof']):
+        if not valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
             print('Proof of work is invalid!')
             return False
     return True
@@ -245,7 +244,6 @@ while waiting_for_input:
     print('3: Output the blockchain blocks')
     print('4: Output participants')
     print('5: Check transaction validity')
-    print('h: Manipulate the chain')
     print('q: Quit')
     user_choice = get_user_choice()
     if user_choice == '1':
@@ -270,10 +268,6 @@ while waiting_for_input:
             print('All transactions are valid')
         else:
             print('There are invalid transactions')
-    elif user_choice == 'h':
-        if len(blockchain) >= 1:
-            blockchain[0] = {'previous_hash': '', 'index': 0, 'transactions': [
-                {'sender': 'Chris', 'recipient': 'Max', 'amount': 100.0}]}
     elif user_choice == 'q':
         waiting_for_input = False
     else:
