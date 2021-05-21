@@ -6,8 +6,10 @@ class Car:
   #auto executes when we call the class as a function, like when we create a new instance
   #we define instance attributes with __init__
 
-  def __init__(self):
-    
+  def __init__(self, starting_top_speed=100):
+    self.top_speed = starting_top_speed
+    self.warnings = []
+
 
 
   #self is not a reserved keyword
@@ -23,13 +25,14 @@ car1 = Car()
 car1.drive()
 
 #Car.top_speed = 200
-Car.warnings.append('New Warning')
+car1.warnings.append('New Warning')
+print(car1.warnings)
 
-car2 = Car()
+car2 = Car(200)
 car2.drive()
 print(car2.warnings)
 
-car3 = Car()
+car3 = Car(250)
 car3.drive()
 print(car2.warnings)
 
