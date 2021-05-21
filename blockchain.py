@@ -1,7 +1,7 @@
 from functools import reduce
 from collections import OrderedDict
 from hash_util import hash_string_256, hash_block
-
+from block import Block
 import hashlib as hl
 import json
 import pickle
@@ -46,13 +46,11 @@ def load_data():
             # if it is not replaced, when a hash is recalculated, it will not match the previous_hash string
             updated_blockchain = []
             for block in blockchain:
-                updated_block = {
-                    'previous_hash': block['previous_hash'],
-                    'index': block['index'],
-                    'proof': block['proof'],
-                    'transactions': [OrderedDict(
+                #helper variable
+                converted_tx = [OrderedDict(
                         [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
-                }
+                #using the Block class to create a block
+                updated_block = Block(block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
                 updated_blockchain.append(updated_block)
             blockchain = updated_blockchain
             # there is no new line after open_transactions, so we do not need [:-1]
