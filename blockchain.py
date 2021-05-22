@@ -2,6 +2,7 @@ from functools import reduce
 from collections import OrderedDict
 from hash_util import hash_string_256, hash_block
 from block import Block
+from transaction import Transaction
 import hashlib as hl
 import json
 import pickle
@@ -47,8 +48,7 @@ def load_data():
             updated_blockchain = []
             for block in blockchain:
                 # helper variable
-                converted_tx = [OrderedDict(
-                    [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])]) for tx in block['transactions']]
+                converted_tx = [Transaction(tx['sender'], tx['recipient'], tx['amount']) for tx in block['transactions']]
                 # using the Block class to create a block
                 updated_block = Block(
                     block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
@@ -58,8 +58,7 @@ def load_data():
             open_transactions = json.loads(file_content[1])
             updated_transactions = []
             for tx in open_transactions:
-                updated_transaction = OrderedDict(
-                    [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])])
+                updated_transaction = Transaction(tx['sender'], tx['recipient'], tx['amount'])
                 updated_transactions.append(updated_transaction)
                 open_transactions = updated_transactions
     except (IOError, IndexError):
