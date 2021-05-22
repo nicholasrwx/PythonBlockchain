@@ -9,5 +9,5 @@ class Block:
     self.proof = proof
 
   def __repr__(self):
-    return 'Index: {}, Previous Hash: {}, Proof: {}, Transactions: {}'.format(self.index, self.previous_hash, self.proof, self.transactions)
+    return str(self.__dict__)
 
