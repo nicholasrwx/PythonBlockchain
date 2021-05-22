@@ -7,3 +7,7 @@ class Block:
     self.timestamp = time
     self.transactions = transactions
     self.proof = proof
+
+  def __repr__(self):
+    return 'Index: {}, Previous Hash: {}, Proof: {}, Transactions: {}'.format(self.index, self.previous_hash, self.proof, self.transactions)
+
