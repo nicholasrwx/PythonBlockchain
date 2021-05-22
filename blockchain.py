@@ -48,7 +48,8 @@ def load_data():
             updated_blockchain = []
             for block in blockchain:
                 # helper variable
-                converted_tx = [Transaction(tx['sender'], tx['recipient'], tx['amount']) for tx in block['transactions']]
+                converted_tx = [Transaction(
+                    tx['sender'], tx['recipient'], tx['amount']) for tx in block['transactions']]
                 # using the Block class to create a block
                 updated_block = Block(
                     block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
@@ -58,7 +59,8 @@ def load_data():
             open_transactions = json.loads(file_content[1])
             updated_transactions = []
             for tx in open_transactions:
-                updated_transaction = Transaction(tx['sender'], tx['recipient'], tx['amount'])
+                updated_transaction = Transaction(
+                    tx['sender'], tx['recipient'], tx['amount'])
                 updated_transactions.append(updated_transaction)
                 open_transactions = updated_transactions
     except (IOError, IndexError):
@@ -78,7 +80,8 @@ def save_data():
         with open('blockchain.txt', mode='w') as f:
             # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
             # use file_name.txt
-            saveable_chain = [block.__dict__ for block in blockchain]
+            saveable_chain = [block.__dict__ for block in [Block(block_el.index, block_el.previous_hash, [
+                                                                 tx.__dict__ for tx in block_el.transactions], block_el.proof, block_el.timestamp) for block_el in blockchain]]
             f.write(json.dumps(saveable_chain))
             f.write('\n')
             saveable_tx = [tx.__dict__ for tx in open_transactions]
@@ -98,7 +101,8 @@ def save_data():
 
 
 def valid_proof(transactions, last_hash, proof):
-    guess = (str([tx.to_ordered_dict() for tx in transactions]) + str(last_hash) + str(proof)).encode()
+    guess = (str([tx.to_ordered_dict() for tx in transactions]) +
+             str(last_hash) + str(proof)).encode()
     print(guess, "GUESS GUESS GUES")
     guess_hash = hash_string_256(guess)
     print(guess_hash, "GUESS HASH")
