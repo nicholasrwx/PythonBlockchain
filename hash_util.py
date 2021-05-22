@@ -24,9 +24,19 @@ def hash_block(block):
     # you'll end up with hash's not working well together, because you will be invisibly changing
     # old dicts of other blocks.
 
+
+    #****************************
+    # dict only works on the top layer
+    # any embedded objects will not get converted to dicts,
+    # it will just display a reference in memory for that object
+    # THIS IS WHY WE NEED TO CREATE A COPY TO EDIT, SO IT DOESN'T edit the ones in memory
+
+
     hashable_block = block.__dict__.copy()
-
-
+   
+    #we are able to access to_ordered_dict() through inheritance or through the block that is being passed?
+    hashable_block['transactions'] = [tx.to_ordered_dict() for tx in hashable_block['transactions']]
+    print(hashable_block)
     return hash_string_256(json.dumps(hashable_block, sort_keys=True).encode())
 
     # return '-'.join([str(block[key]) for key in block])
