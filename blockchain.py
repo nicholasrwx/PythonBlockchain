@@ -81,7 +81,8 @@ def save_data():
             saveable_chain = [block.__dict__ for block in blockchain]
             f.write(json.dumps(saveable_chain))
             f.write('\n')
-            f.write(json.dumps(open_transactions))
+            saveable_tx = [tx.__dict__ for tx in open_transactions]
+            f.write(json.dumps(saveable_tx))
 
             # to write to binary instead of default txt, you need mode=wb
             # you can save the file as file_name.p instead of file_name.txt
