@@ -140,8 +140,8 @@ def get_balance(participant):
 
 # check senders balance
 def verify_transaction(transaction):
-    sender_balance = get_balance(transaction['sender'])
-    return sender_balance >= transaction['amount']
+    sender_balance = get_balance(transaction.sender)
+    return sender_balance >= transaction.amount
 
 # append previous and new value to blockchain
 # arguments:
@@ -154,12 +154,9 @@ def add_transaction(recipient, sender=owner, amount=[1.0]):
     #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
     # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
     # otherwise, unless altered, Normally unordered
-    transaction = OrderedDict(
-        [('sender', sender), ('recipient', recipient), ('amount', amount)])
+    transaction = Transaction(sender, recipient, amount)
     if verify_transaction(transaction):
         open_transactions.append(transaction)
-        participants.add(sender)
-        participants.add(recipient)
         save_data()
         return True
     return False
