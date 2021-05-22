@@ -17,7 +17,16 @@ def hash_block(block):
     # we call encode() in it, to format it to UTF-8, which is the format sha256 needs
     # The string is converted initially into a byte hash
     # we need hexdigest() to conver it into a string hash
+    
+    #this will give a DICT VERSION of the BLOCK.. because JSON doesn't work with REGULAR Objects!!
+    # .copy() ensures that hashable_block doens't override the previous reference in memory
+    # for the last block it had
+    # you'll end up with hash's not working well together, because you will be invisibly changing
+    # old dicts of other blocks.
 
-    return hash_string_256(json.dumps(block, sort_keys=True).encode())
+    hashable_block = block.__dict__.copy()
+
+
+    return hash_string_256(json.dumps(hashable_block, sort_keys=True).encode())
 
     # return '-'.join([str(block[key]) for key in block])
