@@ -12,8 +12,8 @@ MINING_REWARD = 10
 
 blockchain = []
 open_transactions = []
-owner = 'Max'
-participants = {'Max'}
+owner = 'Nick'
+participants = {'Nick'}
 
 
 def load_data():
@@ -62,7 +62,7 @@ def load_data():
                     [('sender', tx['sender']), ('recipient', tx['recipient']), ('amount', tx['amount'])])
                 updated_transactions.append(updated_transaction)
                 open_transactions = updated_transactions
-    except IOError:
+    except (IOError, IndexError):
         genesis_block = Block(0, '', [], 100, 0)
         blockchain = [genesis_block]
         open_transactions = []
