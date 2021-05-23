@@ -1,8 +1,8 @@
 from hash_util import hash_string_256, hash_block
 
 class Verification:
-
-    def valid_proof(self, transactions, last_hash, proof):
+    @staticmethod
+    def valid_proof(transactions, last_hash, proof):
         guess = (str([tx.to_ordered_dict() for tx in transactions]) +
                  str(last_hash) + str(proof)).encode()
         print(guess, "GUESS GUESS GUES")
@@ -16,7 +16,8 @@ class Verification:
     # it uses the nonce however to make sure all the pow checkout, as is designed,
     # so its easy to verify, but hard to solve.
 
-    def verify_chain(self, blockchain):
+    @classmethod
+    def verify_chain(cls, blockchain):
         for (index, block) in enumerate(blockchain):
             if index == 0:
                 continue
@@ -34,12 +35,12 @@ class Verification:
 
 
     # check senders balance
-
-    def verify_transaction(self, transaction, get_balance):
+    @staticmethod
+    def verify_transaction(transaction, get_balance):
         sender_balance = get_balance()
         return sender_balance >= transaction.amount
 
 
-
-    def verify_transactions(self, open_transactions, get_balance):
+    @classmethod
+    def verify_transactions(cls, open_transactions, get_balance):
         return all([self.verify_transaction(tx, get_balance) for tx in open_transactions])
