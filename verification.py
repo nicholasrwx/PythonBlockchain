@@ -28,7 +28,7 @@ class Verification:
                 # to exclude the rewards from the validation process.
                 # they are added to the transactions for the new block.
                 # they were never included or used in the POW HASH for the last block
-            if not self.valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
+            if not cls.valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
                 print('Proof of work is invalid!')
                 return False
         return True
@@ -43,4 +43,4 @@ class Verification:
 
     @classmethod
     def verify_transactions(cls, open_transactions, get_balance):
-        return all([self.verify_transaction(tx, get_balance) for tx in open_transactions])
+        return all([cls.verify_transaction(tx, get_balance) for tx in open_transactions])
