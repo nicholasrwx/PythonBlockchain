@@ -115,7 +115,10 @@ class Blockchain:
     # You can read this forwards, starting from the smallest piece to the largest piece
 
 
-    def get_balance(self, participant):
+    def get_balance(self):
+
+        participant = self.hosting_node
+
         tx_sender = [[tx.amount for tx in block.transactions
                     if tx.sender == participant] for block in self.chain]
         open_tx_sender = [tx.amount
@@ -175,6 +178,8 @@ class Blockchain:
         print(hashed_block, 'HASHED BLOCK')
         block = Block(len(self.chain), hashed_block, copied_transactions, proof)
         self.chain.append(block)
+        self.open_transactions = []
+        self.save_data()
         return True
 
 
