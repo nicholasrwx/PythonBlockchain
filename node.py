@@ -5,7 +5,8 @@ from blockchain import Blockchain
 class Node(Blockchain):
 
     def __init__(self):
-        self.id = uuid4()
+        # self.id = str(uuid4())
+        self.id = 'Max'
         self.blockchain = Blockchain(self.id)
     # User input function
     def get_transaction_value(self):
@@ -36,10 +37,10 @@ class Node(Blockchain):
         while waiting_for_input:
             print('please choose')
             print('1: Add a new transaction value')
+            print('2: Mine a new block')
             print('3: Output the blockchain blocks')
             print('4: Check transaction validity')
             print('q: Quit')
-            print('2: Mine a new block')
             user_choice = self.get_user_choice()
             if user_choice == '1':
                 tx_data = self.get_transaction_value()
@@ -78,3 +79,6 @@ class Node(Blockchain):
             print('user left!')
 
         print('Done')
+
+node = Node()
+node.listen_for_input()
