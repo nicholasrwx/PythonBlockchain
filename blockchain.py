@@ -15,11 +15,18 @@ class Blockchain:
         #Our starting block for the blockchain
         genesis_block = Block(0, '', [], 100, 0)
         #Initializing our (empty) blockchain list
-        self.chain = [genesis_block]
+        self.__chain = [genesis_block]
         #Unhandled Transactions
-        self.open_transactions = []
+        self.__open_transactions = []
         self.load_data()
         self.hosting_node = hosting_node_id
+
+    def get_chain(self):
+        return self.__chain[:]
+
+    def get_open_transactions(self):
+        return self.__open_transactions[:]
+        
 
     def load_data(self):
 
