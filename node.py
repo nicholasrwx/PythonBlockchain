@@ -1,7 +1,10 @@
-class Node:
+from uuid import uuid4
+from blockchain import Blockchain
+
+class Node(Blockchain):
 
     def __init__():
-        self.blockchain = []
+        self.blockchain = Blockchain(uuid())
 
     # User input function
     def get_transaction_value(self):

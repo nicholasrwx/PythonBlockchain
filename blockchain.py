@@ -11,7 +11,7 @@ from verification import Verification
 MINING_REWARD = 10
 
 class Blockchain:
-    def __init__(self):        
+    def __init__(self, hosting_node_id):        
         #Our starting block for the blockchain
         genesis_block = Block(0, '', [], 100, 0)
         #Initializing our (empty) blockchain list
@@ -19,6 +19,7 @@ class Blockchain:
         #Unhandled Transactions
         self.open_transactions = []
         self.load_data()
+        self.hosting_node = hosting_node_id
 
     def load_data(self):
 
@@ -157,7 +158,7 @@ class Blockchain:
         return False
 
 
-    def mine_block(self, node):
+    def mine_block(self):
     # a block should be a dictionary
     # previous hash -> summarized value of the previous block
         last_block = self.chain[-1]
@@ -168,7 +169,7 @@ class Blockchain:
         #     'recipient': owner,
         #     'amount': MINING_REWARD
         # }
-        reward_transaction = Transaction('MINING', node, MINING_REWARD)
+        reward_transaction = Transaction('MINING', self.hosting_node, MINING_REWARD)
         copied_transactions = self.open_transactions[:]
         copied_transactions.append(reward_transaction)
         print(hashed_block, 'HASHED BLOCK')
