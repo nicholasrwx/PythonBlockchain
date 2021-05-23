@@ -71,7 +71,7 @@ class Blockchain:
                     updated_transaction = Transaction(
                         tx['sender'], tx['recipient'], tx['amount'])
                     updated_transactions.append(updated_transaction)
-                self.open_transactions = updated_transactions
+                self.__open_transactions = updated_transactions
         except (IOError, IndexError):
             pass
         finally:
@@ -88,7 +88,7 @@ class Blockchain:
                                                                     tx.__dict__ for tx in block_el.transactions], block_el.proof, block_el.timestamp) for block_el in self.__chain]]
                 f.write(json.dumps(saveable_chain))
                 f.write('\n')
-                saveable_tx = [tx.__dict__ for tx in self.open_transactions]
+                saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
                 f.write(json.dumps(saveable_tx))
 
                 # to write to binary instead of default txt, you need mode=wb
@@ -109,7 +109,7 @@ class Blockchain:
         # recalculating a previous block, storing it in last_hash
         last_hash = hash_block(last_block)
         proof = 0
-        while not Verification.valid_proof(self.open_transactions, last_hash, proof):
+        while not Verification.valid_proof(self.__open_transactions, last_hash, proof):
             proof += 1
         return proof
 
@@ -128,7 +128,7 @@ class Blockchain:
         tx_sender = [[tx.amount for tx in block.transactions
                     if tx.sender == participant] for block in self.__chain]
         open_tx_sender = [tx.amount
-                        for tx in self.open_transactions if tx.sender == participant]
+                        for tx in self.__open_transactions if tx.sender == participant]
         tx_sender.append(open_tx_sender)
         print(tx_sender)
         amount_sent = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
@@ -160,7 +160,7 @@ class Blockchain:
         # otherwise, unless altered, Normally unordered
         transaction = Transaction(sender, recipient, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
-            self.open_transactions.append(transaction)
+            self.__open_transactions.append(transaction)
             self.save_data()
             return True
         return False
@@ -178,12 +178,12 @@ class Blockchain:
         #     'amount': MINING_REWARD
         # }
         reward_transaction = Transaction('MINING', self.hosting_node, MINING_REWARD)
-        copied_transactions = self.open_transactions[:]
+        copied_transactions = self.__open_transactions[:]
         copied_transactions.append(reward_transaction)
         print(hashed_block, 'HASHED BLOCK')
         block = Block(len(self.__chain), hashed_block, copied_transactions, proof)
         self.__chain.append(block)
-        self.open_transactions = []
+        self.__open_transactions = []
         self.save_data()
         return True
 
