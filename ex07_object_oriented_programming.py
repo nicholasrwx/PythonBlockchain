@@ -28,6 +28,10 @@ class Food:
 
 class Meat(Food):
 
+    #gets initialized vars from the super class, and assigns them to the sub class
+    def __init__(self):
+      super().__init__()
+
     def __repr__(self):
         return '{}, {}'.format(self.name, self.kind)
 
@@ -36,6 +40,10 @@ class Meat(Food):
 
 
 class Fruit(Food):
+    
+    #gets initialized vars from the super class, and assigns them to the sub class
+    def __init__(self):
+      super().__init__()
 
     def __str__(self):
         return '{}, {}'.format(self.name, self.kind)
@@ -44,7 +52,7 @@ class Fruit(Food):
         return
 
 
-# Instantiate the Food class
+# Instantiate the Food, Meat, and Fruit class
 food = Food()
 meat = Meat()
 fruit = Fruit()
@@ -59,6 +67,7 @@ food.describe2(food.kind, food.name)
 food.get_describe()
 
 
+# Print the Food class from the Meat and Fruit class 
 print("MEAT CLASS", meat)
 print("FRUIT CLASS", fruit)
 
