@@ -15,14 +15,21 @@ class Blockchain:
         #Our starting block for the blockchain
         genesis_block = Block(0, '', [], 100, 0)
         #Initializing our (empty) blockchain list
-        self.__chain = [genesis_block]
+        self.chain = [genesis_block]
         #Unhandled Transactions
         self.__open_transactions = []
         self.load_data()
         self.hosting_node = hosting_node_id
 
-    def get_chain(self):
+    #automatically (implicitly) makes self.chain private, and needs to be accessed with 
+    # a defined getter and setter using self.__chain
+    @property
+    def chain(self):
         return self.__chain[:]
+
+    @chain.setter
+    def chain(self, val):
+        self.__chain = val
 
     def get_open_transactions(self):
         return self.__open_transactions[:]
@@ -63,7 +70,7 @@ class Blockchain:
                     updated_block = Block(
                         block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
                     updated_blockchain.append(updated_block)
-                self.__chain = updated_blockchain
+                self.chain = updated_blockchain
                 # there is no new line after open_transactions, so we do not need [:-1]
                 open_transactions = json.loads(file_content[1])
                 updated_transactions = []
