@@ -1,9 +1,9 @@
-import hashlib as _hl
+import hashlib as hl
 import json
 
 
 def hash_string_256(string):
-  return _hl.sha256(string).hexdigest()
+  return hl.sha256(string).hexdigest()
 
 
 
