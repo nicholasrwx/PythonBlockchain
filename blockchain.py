@@ -4,8 +4,9 @@ import pickle
 from functools import reduce
 from block import Block
 from transaction import Transaction
-from hash_util import hash_block
-from verification import Verification
+from utility.verification import Verification
+from utility.hash_util import hash_block
+
 
 #The reward we give to miners (for creating a new block)
 MINING_REWARD = 10
