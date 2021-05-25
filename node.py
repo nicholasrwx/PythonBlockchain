@@ -1,5 +1,5 @@
 from uuid import uuid4
-from verification import Verification
+from utility.verification import Verification
 from blockchain import Blockchain
 
 class Node(Blockchain):
@@ -78,5 +78,8 @@ class Node(Blockchain):
 
         print('Done')
 
-node = Node()
-node.listen_for_input()
+#this will only execute if the condition for the name of the file is met
+#if it's direct execution, this condition will be true
+if __name__ == '__main__':
+    node = Node()
+    node.listen_for_input()
