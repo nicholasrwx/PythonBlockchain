@@ -1,13 +1,14 @@
 from uuid import uuid4
 from utility.verification import Verification
 from blockchain import Blockchain
+from wallet import Wallet
 
 class Node(Blockchain):
 
     def __init__(self):
-        # self.id = str(uuid4())
-        self.id = 'Max'
-        self.blockchain = Blockchain(self.id)
+        # self.wallet.public_key = str(uuid4())
+        self.wallet = Wallet()
+        self.blockchain = Blockchain(self.wallet.public_key)
     # User input function
     def get_transaction_value(self):
         tx_recipient = input('Enter the recipient of the transaction: ')
@@ -48,7 +49,7 @@ class Node(Blockchain):
                 tx_data = self.get_transaction_value()
                 recipient, amount = tx_data  # unpack/destructure tx_data tuple
                 # add transaction amount to the blockchain
-                if self.blockchain.add_transaction(recipient, self.id, amount=amount):
+                if self.blockchain.add_transaction(recipient, self.wallet.public_key, amount=amount):
                     print('Added transaction!')
                 else:
                     print('Transaction failed!')
@@ -63,7 +64,7 @@ class Node(Blockchain):
                 else:
                     print('There are invalid transactions')
             elif user_choice == '5':
-                wallet = Wallet()
+                self.wallet.create_keys()
             elif user_choice == '6':
                 pass
             elif user_choice == 'q':
@@ -76,7 +77,7 @@ class Node(Blockchain):
                 print(self.blockchain, 'BLOCKCHAIN')
                 print(self.blockchain[0], 'BLOCKCHAIN 0')
                 break
-            print('Balance of {}: {:6.2f}'.format(self.id, self.blockchain.get_balance()))
+            print('Balance of {}: {:6.2f}'.format(self.wallet.public_key, self.blockchain.get_balance()))
 
         # executes once your done with a while loop
         else:
