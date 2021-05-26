@@ -44,6 +44,7 @@ class Node(Blockchain):
             print('4: Check transaction validity')
             print('5: Create wallet')
             print('6: Load wallet')
+            print('7: Save keys')
             print('q: Quit')
             user_choice = self.get_user_choice()
             if user_choice == '1':
@@ -70,7 +71,9 @@ class Node(Blockchain):
                 self.blockchain = Blockchain(self.wallet.public_key)
             elif user_choice == '6':
                 self.wallet.load_keys()
-                self.blockchain = Blockchain(self.wallet.public_key)
+                self.blockchain = Blockchain(self.wallet.public_key)            
+            elif user_choice == '7':
+                self.wallet.save_keys()
             elif user_choice == 'q':
                 waiting_for_input = False
             else:
