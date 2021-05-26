@@ -8,7 +8,8 @@ class Node(Blockchain):
     def __init__(self):
         # self.wallet.public_key = str(uuid4())
         self.wallet = Wallet()
-        self.blockchain = None
+        self.wallet.create_keys()
+        self.blockchain = Blockchain(self.wallet.public_key)
     # User input function
     def get_transaction_value(self):
         tx_recipient = input('Enter the recipient of the transaction: ')
