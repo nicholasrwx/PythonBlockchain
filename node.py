@@ -63,9 +63,9 @@ class Node(Blockchain):
                 else:
                     print('There are invalid transactions')
             elif user_choice == '5':
-            
+                wallet = Wallet()
             elif user_choice == '6':
-            
+                pass
             elif user_choice == 'q':
                 waiting_for_input = False
             else:
