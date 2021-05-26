@@ -168,6 +168,8 @@ class Blockchain:
         #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
         # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
         # otherwise, unless altered, Normally unordered
+        if self.hosting_node == None:
+            return False            
         transaction = Transaction(sender, recipient, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
@@ -179,6 +181,8 @@ class Blockchain:
     def mine_block(self):
     # a block should be a dictionary
     # previous hash -> summarized value of the previous block
+        if self.hosting_node == None:
+            return False
         last_block = self.__chain[-1]
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
