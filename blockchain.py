@@ -68,7 +68,7 @@ class Blockchain:
                 for block in blockchain:
                     # helper variable
                     converted_tx = [Transaction(
-                        tx['sender'], tx['recipient'], tx['amount']) for tx in block['transactions']]
+                        tx['sender'], tx['recipient'], tx['signature'], tx['amount']) for tx in block['transactions']]
                     # using the Block class to create a block
                     updated_block = Block(
                         block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
@@ -79,7 +79,7 @@ class Blockchain:
                 updated_transactions = []
                 for tx in open_transactions:
                     updated_transaction = Transaction(
-                        tx['sender'], tx['recipient'], tx['amount'])
+                        tx['sender'], tx['recipient'], tx['signature'], tx['amount'])
                     updated_transactions.append(updated_transaction)
                 self.__open_transactions = updated_transactions
         except (IOError, IndexError):
@@ -170,7 +170,7 @@ class Blockchain:
         # otherwise, unless altered, Normally unordered
         if self.hosting_node == None:
             return False            
-        transaction = Transaction(sender, recipient, amount)
+        transaction = Transaction(sender, recipient, signature, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
             self.save_data()
@@ -191,7 +191,7 @@ class Blockchain:
         #     'recipient': owner,
         #     'amount': MINING_REWARD
         # }
-        reward_transaction = Transaction('MINING', self.hosting_node, MINING_REWARD)
+        reward_transaction = Transaction('MINING', self.hosting_node, '', MINING_REWARD)
         copied_transactions = self.__open_transactions[:]
         copied_transactions.append(reward_transaction)
         print(hashed_block, 'HASHED BLOCK')
