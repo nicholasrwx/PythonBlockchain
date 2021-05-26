@@ -164,7 +164,7 @@ class Blockchain:
     #   :amount: The amount of coins sent with the transaction (default = 1.0)
 
 
-    def add_transaction(self, recipient, sender, amount=[1.0]):
+    def add_transaction(self, recipient, sender, signature, amount=[1.0]):
         #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
         # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
         # otherwise, unless altered, Normally unordered
