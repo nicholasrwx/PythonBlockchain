@@ -48,7 +48,7 @@ class Wallet:
         # convert key to binary and export it,convert it to hexidecimal, convert it to ascii, convert ascii to string, return it
         return (binascii.hexlify(private_key.exportKey(format='DER')).decode('ascii'), binascii.hexlify(public_key.exportKey(format='DER')).decode('ascii'))
 
-    def sign_transaction(self, sender recipient, amount):
+    def sign_transaction(self, sender, recipient, amount):
         #create signer entity
         #convert private_key string to ascii, ascii to hex, hex back to binary, import key into PKCS algo
         signer = PKCS1_v1_5.new(RSA.importKey(binascii.unhexlify(self.private_key)))
