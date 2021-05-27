@@ -22,6 +22,8 @@ def create_keys():
             'public_key': wallet.public_key,
             'private_key': wallet.private_key
         }
+        global blockchain
+        blockchain = Blockchain(wallet.public_key)
         return jsonify(response), 201
     else:
         response = {
