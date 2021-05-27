@@ -23,8 +23,10 @@ class Wallet:
                     f.write(self.public_key)
                     f.write('\n')
                     f.write(self.private_key)
+                return True
             except (IOError, IndexError):
                 print('Saving wallet failed...')
+                return False
 
     def load_keys(self):
         try:
@@ -49,23 +51,26 @@ class Wallet:
         return (binascii.hexlify(private_key.exportKey(format='DER')).decode('ascii'), binascii.hexlify(public_key.exportKey(format='DER')).decode('ascii'))
 
     def sign_transaction(self, sender, recipient, amount):
-        #create signer entity
-        #convert private_key string to ascii, ascii to hex, hex back to binary, import key into PKCS algo
-        signer = PKCS1_v1_5.new(RSA.importKey(binascii.unhexlify(self.private_key)))
-        #create transactions hash to sign, encode it into utf8 binary.
-        h = SHA256.new((str(sender) + str(recipient) + str(amount)).encode('utf8'))
-        #sign the transaction
+        # create signer entity
+        # convert private_key string to ascii, ascii to hex, hex back to binary, import key into PKCS algo
+        signer = PKCS1_v1_5.new(RSA.importKey(
+            binascii.unhexlify(self.private_key)))
+        # create transactions hash to sign, encode it into utf8 binary.
+        h = SHA256.new((str(sender) + str(recipient) +
+                       str(amount)).encode('utf8'))
+        # sign the transaction
         signature = signer.sign(h)
-        #return the signature as a hex string
+        # return the signature as a hex string
         return binascii.hexlify(signature).decode('ascii')
 
     @staticmethod
     def verify_transaction(transaction):
-      #convert public key back to binary
-      #recalculate the senders signature  
-      public_key = RSA.importKey(binascii.unhexlify(transaction.sender))
-      verifier = PKCS1_v1_5.new(public_key)
-      #recalculate the transaction      
-      h = SHA256.new((str(transaction.sender) + str(transaction.recipient) + str(transaction.amount)).encode('utf8'))
-      #compare the transaction, transaction signature, with the recalculated signature in verifier.
-      return verifier.verify(h, binascii.unhexlify(transaction.signature))
+        # convert public key back to binary
+        # recalculate the senders signature
+        public_key = RSA.importKey(binascii.unhexlify(transaction.sender))
+        verifier = PKCS1_v1_5.new(public_key)
+        # recalculate the transaction
+        h = SHA256.new((str(transaction.sender) + str(transaction.recipient) +
+                       str(transaction.amount)).encode('utf8'))
+        # compare the transaction, transaction signature, with the recalculated signature in verifier.
+        return verifier.verify(h, binascii.unhexlify(transaction.signature))
