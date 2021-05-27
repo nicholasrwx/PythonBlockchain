@@ -14,6 +14,8 @@ blockchain = Blockchain(wallet.public_key)
 CORS(app)
 
 # default end-point get route
+
+
 @app.route('/', methods=['GET'])
 def get_ui():
     return 'This works'
@@ -21,18 +23,22 @@ def get_ui():
 
 @app.route('/mine', methods=['POST'])
 def mine():
-  if blockchain.mine_block():
-    response = {
-      'message': 'Block added successfully.',
-      'block':
-    }
-    return ...
-  else:
-    response = {
-      'message': 'Adding a block failed.',
-      'wallet_set_up': wallet.public_key != None
-    }
-    return jsonify(response), 500
+    block = blockchain.mine_block()
+    if block != None:
+        dict_block = block.__dict__.copy()
+        dict_block['transactions'] = [
+            tx.__dict__ for tx in dict_block['transactions']]
+        response = {
+            'message': 'Block added successfully.',
+            'block': dict_block
+        }
+        return jsonify(response), 201
+    else:
+        response = {
+            'message': 'Adding a block failed.',
+            'wallet_set_up': wallet.public_key != None
+        }
+        return jsonify(response), 500
 
 
 # chain endpoint, gets blockchain data
