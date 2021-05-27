@@ -61,9 +61,6 @@ class Wallet:
 
     @staticmethod
     def verify_transaction(transaction):
-      #the MINING signature isn't a public key, so we return true, instead of validating. for now.
-      if transaction.sender == 'MINING':
-        return True
       #convert public key back to binary
       #recalculate the senders signature  
       public_key = RSA.importKey(binascii.unhexlify(transaction.sender))
