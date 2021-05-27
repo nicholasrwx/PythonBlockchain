@@ -172,9 +172,6 @@ class Blockchain:
         if self.hosting_node == None:
             return False            
         transaction = Transaction(sender, recipient, signature, amount)
-        #verify wallet signature before adding transaction
-        if not Wallet.verify_transaction(transaction):
-            return False 
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
             self.save_data()
@@ -197,13 +194,18 @@ class Blockchain:
         # }
         reward_transaction = Transaction('MINING', self.hosting_node, '', MINING_REWARD)
         copied_transactions = self.__open_transactions[:]
+        #this verifies all the transactions that would be appended to the new block
+        #but leaves out the reward transaction. if we get a reward transaction it will be false here.
+        #this way, if someone manipulates and sends a mining transaction to be verified.
+        #it will come back false as we also removed the hardcoded Mining = true in verification file.
+        #after the checks are complete, only then is the mining rewards transaction included.
+        for tx in copied_transactions:
+            if not Wallet.verify_transaction(tx):
+                return False
         copied_transactions.append(reward_transaction)
         print(hashed_block, 'HASHED BLOCK')
         block = Block(len(self.__chain), hashed_block, copied_transactions, proof)
         #verify transaction with wallet signature, inside new block
-        for tx in block.transactions:
-            if not Wallet.verify_transaction(tx):
-                return False
         self.__chain.append(block)
         self.__open_transactions = []
         self.save_data()
