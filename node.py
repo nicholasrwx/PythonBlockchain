@@ -13,6 +13,21 @@ blockchain = Blockchain(wallet.public_key)
 # this allows for multiple nodes aside from the host server to send and receive requests also.
 CORS(app)
 
+
+@app.route('/wallet', methods=['POST'])
+def create_keys():
+    wallet.create_keys()
+    wallet.save_keys()
+    response = {
+        'public_key': wallet.public_key,
+        'private_key': wallet.private_key
+    }
+    pass
+
+
+def load_keys():
+    pass
+
 # default end-point get route
 
 
