@@ -172,6 +172,7 @@ class Blockchain:
         if self.hosting_node == None:
             return False            
         transaction = Transaction(sender, recipient, signature, amount)
+        #verify wallet signature before adding transaction
         if not Wallet.verify_transaction(transaction):
             return False 
         if Verification.verify_transaction(transaction, self.get_balance):
@@ -199,6 +200,7 @@ class Blockchain:
         copied_transactions.append(reward_transaction)
         print(hashed_block, 'HASHED BLOCK')
         block = Block(len(self.__chain), hashed_block, copied_transactions, proof)
+        #verify transaction with wallet signature, inside new block
         for tx in block.transactions:
             if not Wallet.verify_transaction(tx):
                 return False
