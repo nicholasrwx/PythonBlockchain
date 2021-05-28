@@ -133,7 +133,7 @@ class Blockchain:
 
 
     def get_balance(self):
-
+        #find the hosting node balance and return the value
         if self.hosting_node == None:
             return None
         participant = self.hosting_node
