@@ -9,23 +9,24 @@ from utility.hash_util import hash_block
 from wallet import Wallet
 
 
-#The reward we give to miners (for creating a new block)
+# The reward we give to miners (for creating a new block)
 MINING_REWARD = 10
 
 print(__name__)
 
+
 class Blockchain:
-    def __init__(self, hosting_node_id):        
-        #Our starting block for the blockchain
+    def __init__(self, hosting_node_id):
+        # Our starting block for the blockchain
         genesis_block = Block(0, '', [], 100, 0)
-        #Initializing our (empty) blockchain list
+        # Initializing our (empty) blockchain list
         self.chain = [genesis_block]
-        #Unhandled Transactions
+        # Unhandled Transactions
         self.__open_transactions = []
         self.load_data()
         self.hosting_node = hosting_node_id
 
-    #automatically (implicitly) makes self.chain private, and needs to be accessed with 
+    # automatically (implicitly) makes self.chain private, and needs to be accessed with
     # a defined getter and setter using self.__chain
     @property
     def chain(self):
@@ -37,7 +38,6 @@ class Blockchain:
 
     def get_open_transactions(self):
         return self.__open_transactions[:]
-        
 
     def load_data(self):
 
@@ -88,15 +88,15 @@ class Blockchain:
         finally:
             print('Cleanup!')
 
-
     # save blockchain data in external file
+
     def save_data(self):
         try:
             with open('blockchain.txt', mode='w') as f:
                 # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
                 # use file_name.txt
                 saveable_chain = [block.__dict__ for block in [Block(block_el.index, block_el.previous_hash, [
-                                                                    tx.__dict__ for tx in block_el.transactions], block_el.proof, block_el.timestamp) for block_el in self.__chain]]
+                    tx.__dict__ for tx in block_el.transactions], block_el.proof, block_el.timestamp) for block_el in self.__chain]]
                 f.write(json.dumps(saveable_chain))
                 f.write('\n')
                 saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
@@ -114,7 +114,6 @@ class Blockchain:
         except IOError:
             print('Saving Failed')
 
-
     def proof_of_work(self):
         last_block = self.__chain[-1]
         # recalculating a previous block, storing it in last_hash
@@ -124,41 +123,38 @@ class Blockchain:
             proof += 1
         return proof
 
-
     # Nested list comprehension
     # GET an amount for a given transaction
     # FOR all transactions in a block
     # IF the sender is a participant
     # You can read this forwards, starting from the smallest piece to the largest piece
 
-
     def get_balance(self):
-        #find the hosting node balance and return the value
+        # find the hosting node balance and return the value
         if self.hosting_node == None:
             return None
         participant = self.hosting_node
 
         tx_sender = [[tx.amount for tx in block.transactions
-                    if tx.sender == participant] for block in self.__chain]
+                      if tx.sender == participant] for block in self.__chain]
         open_tx_sender = [tx.amount
-                        for tx in self.__open_transactions if tx.sender == participant]
+                          for tx in self.__open_transactions if tx.sender == participant]
         tx_sender.append(open_tx_sender)
         print(tx_sender)
         amount_sent = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
-                            if len(tx_amt) > 0 else tx_sum + 0, tx_sender, 0)
+                             if len(tx_amt) > 0 else tx_sum + 0, tx_sender, 0)
         tx_recipient = [[tx.amount for tx in block.transactions
                         if tx.recipient == participant] for block in self.__chain]
         amount_received = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
-                                if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
+                                 if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
         return amount_received - amount_sent
 
-
     # return the last value in the blockchain
+
     def get_last_blockchain_value(self):
         if len(self.__chain) < 1:
             return None
         return self.__chain[-1]
-
 
     # append previous and new value to blockchain
     # arguments:
@@ -166,13 +162,12 @@ class Blockchain:
     #   :recipient: The recipient of the coins.
     #   :amount: The amount of coins sent with the transaction (default = 1.0)
 
-
     def add_transaction(self, recipient, sender, signature, amount=[1.0]):
         #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
         # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
         # otherwise, unless altered, Normally unordered
         if self.hosting_node == None:
-            return False            
+            return False
         transaction = Transaction(sender, recipient, signature, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
@@ -180,10 +175,9 @@ class Blockchain:
             return True
         return False
 
-
     def mine_block(self):
-    # a block should be a dictionary
-    # previous hash -> summarized value of the previous block
+        # a block should be a dictionary
+        # previous hash -> summarized value of the previous block
         if self.hosting_node == None:
             return None
         last_block = self.__chain[-1]
@@ -194,23 +188,23 @@ class Blockchain:
         #     'recipient': owner,
         #     'amount': MINING_REWARD
         # }
-        reward_transaction = Transaction('MINING', self.hosting_node, '', MINING_REWARD)
+        reward_transaction = Transaction(
+            'MINING', self.hosting_node, '', MINING_REWARD)
         copied_transactions = self.__open_transactions[:]
-        #this verifies all the transactions that would be appended to the new block
-        #but leaves out the reward transaction. if we get a reward transaction it will be false here.
-        #this way, if someone manipulates and sends a mining transaction to be verified.
-        #it will come back false as we also removed the hardcoded Mining = true in verification file.
-        #after the checks are complete, only then is the mining rewards transaction included.
+        # this verifies all the transactions that would be appended to the new block
+        # but leaves out the reward transaction. if we get a reward transaction it will be false here.
+        # this way, if someone manipulates and sends a mining transaction to be verified.
+        # it will come back false as we also removed the hardcoded Mining = true in verification file.
+        # after the checks are complete, only then is the mining rewards transaction included.
         for tx in copied_transactions:
             if not Wallet.verify_transaction(tx):
                 return None
         copied_transactions.append(reward_transaction)
         print(hashed_block, 'HASHED BLOCK')
-        block = Block(len(self.__chain), hashed_block, copied_transactions, proof)
-        #verify transaction with wallet signature, inside new block
+        block = Block(len(self.__chain), hashed_block,
+                      copied_transactions, proof)
+        # verify transaction with wallet signature, inside new block
         self.__chain.append(block)
         self.__open_transactions = []
         self.save_data()
         return block
-
-
