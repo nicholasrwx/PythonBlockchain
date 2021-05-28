@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request
+import json
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from wallet import Wallet
 from blockchain import Blockchain
@@ -13,12 +14,32 @@ blockchain = Blockchain(wallet.public_key)
 # this allows for multiple nodes aside from the host server to send and receive requests also.
 CORS(app)
 
+# these routes are basically the same as my options menu in bash shell prompt on execution
+# except input output is now on a browser client, rather than the linux client.
+# therefore you need to set the routes up alot differently than just reading directly from the
+# functions in the code base.
+# I import the original functions here, and place them underneither a GET or POST request
+# this is where those functions are called, passed down data, and utilized. depending on the input
+# and if the data is correct or not. it also converts everything into or out of json.
+# this is basically an API right here.
+
+# default end-point get route
+
+
+@app.route('/', methods=['GET'])
+def get_ui():
+  # allows to send back a file to the browser from a directory
+  # first argument is the directory
+  # second argument is the file name
+    return send_from_directory('ui', 'node.html')
+
 
 @app.route('/wallet', methods=['POST'])
 def create_keys():
     wallet.create_keys()
     if wallet.save_keys():
         global blockchain
+        # set hosting node id to the wallet public key that was just created
         blockchain = Blockchain(wallet.public_key)
         response = {
             'public_key': wallet.public_key,
@@ -66,12 +87,6 @@ def get_balance():
             'wallet_set_up': wallet.public_key != None
         }
         return jsonify(response), 500
-
-
-# default end-point get route
-@app.route('/', methods=['GET'])
-def get_ui():
-    return 'This works'
 
 
 @app.route('/transaction', methods=['POST'])
@@ -138,6 +153,13 @@ def mine():
             'wallet_set_up': wallet.public_key != None
         }
         return jsonify(response), 500
+
+
+@app.route('/transactions', methods=['GET'])
+def get_open_transaction():
+    transactions = blockchain.get_open_transactions()
+    dict_transactions = [tx.__dict__ for tx in transactions]
+    return jsonify(dict_transactions), 200
 
 
 # chain endpoint, gets blockchain data
