@@ -7,7 +7,7 @@ from blockchain import Blockchain
 app = Flask(__name__)
 # create a wallet Instance
 wallet = Wallet()
-#import blockchain
+# import blockchain
 blockchain = Blockchain(wallet.public_key)
 # calls the constructor of the CORS class, and pass in the server code we created -> app
 # this allows for multiple nodes aside from the host server to send and receive requests also.
@@ -32,12 +32,40 @@ def create_keys():
         return jsonify(response), 500
 
 
+@app.route('/wallet', methods=['GET'])
 def load_keys():
-    pass
+    if wallet.load_keys():
+        response = {
+            'public_key': wallet.public_key,
+            'private_key': wallet.private_key
+        }
+        global blockchain
+        blockchain = Blockchain(wallet.public_key)
+        return jsonify(response), 201
+    else:
+        response = {
+            'message': 'Loading the keys failed.'
+        }
+        return jsonify(response), 500
+
+
+@app.route('/balance', methods=['GET'])
+def get_balance():
+    balance = blockchain.get_balance()
+    if balance != None:
+        response = {
+            'message': 'Fetched balance successfully.',
+            'funds': balance
+        }
+    else:
+        response = {
+            'message': 'Loading balance failed.',
+            'wallet_set_up': wallet.public_key != None
+        }
+        return jsonify(response), 500
+
 
 # default end-point get route
-
-
 @app.route('/', methods=['GET'])
 def get_ui():
     return 'This works'
@@ -53,6 +81,7 @@ def mine():
         response = {
             'message': 'Block added successfully.',
             'block': dict_block
+            'funds': blockchain.get_balance()
         }
         return jsonify(response), 201
     else:
