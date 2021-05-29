@@ -183,8 +183,9 @@ def add_node():
     blockchain.add_peer_node(node)
     response = {
         'message': 'Node added successfully.',
-        'all_nodes':
+        'all_nodes': blockchain.get_peer_nodes()
     }
+    return jsonify(response), 201
 
 # chain endpoint, gets blockchain data
 @app.route('/chain', methods=['GET'])
