@@ -87,6 +87,7 @@ class Blockchain:
                     updated_transactions.append(updated_transaction)
                 self.__open_transactions = updated_transactions
                 peer_nodes = json.loads(file_content[2])
+                #convert a list of nodes, back to a set, and update peer_nodes
                 self.__peer_nodes = set(peer_nodes)
         except (IOError, IndexError):
             pass
@@ -107,6 +108,7 @@ class Blockchain:
                 saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
                 f.write(json.dumps(saveable_tx))
                 f.write('\n')
+                #convert a set of nodes to a list and save it
                 f.write(json.dumps(list(self.__peer_nodes)))
                 # to write to binary instead of default txt, you need mode=wb
                 # you can save the file as file_name.p instead of file_name.txt
@@ -220,4 +222,8 @@ class Blockchain:
         # Arguments:
         #   :node: The node url which should be added.
         self.__peer_nodes.add(node)
+        self.save_data()
+
+    def remove_peer_node(self, node):
+        self.__peer_nodes.discard(node)
         self.save_data()
