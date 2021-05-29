@@ -215,7 +215,7 @@ class Blockchain:
         self.save_data()
         return block
 
-    def add_peer_node(node):
+    def add_peer_node(self, node):
         # Adds a node to the peer node set
         # Arguments:
         #   :node: The node url which should be added.
