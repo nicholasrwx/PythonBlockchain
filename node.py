@@ -162,6 +162,30 @@ def get_open_transaction():
     return jsonify(dict_transactions), 200
 
 
+@app.route('/node', methods=['POST'])
+def add_node():
+    # request is imported from flask, and has a method called get_json()
+    # this forces the incoming request to send us json or it will fail otherwise.
+    values = request.get_json()
+    if not values:
+        response = {
+            'message': 'No data attached.'
+        }
+        return jsonify(response), 400
+    # because json yields a dictionary, we can check for a key such as 'node'
+    if 'node' not in values:
+        response = {
+            'message': 'No node data found.'
+        }
+        return jsonify(response), 400
+    # this is the same as values['node]
+    node = values.get('node')
+    blockchain.add_peer_node(node)
+    response = {
+        'message': 'Node added successfully.',
+        'all_nodes':
+    }
+
 # chain endpoint, gets blockchain data
 @app.route('/chain', methods=['GET'])
 def get_chain():
