@@ -162,6 +162,22 @@ def get_open_transaction():
     return jsonify(dict_transactions), 200
 
 
+# chain endpoint, gets blockchain data
+@app.route('/chain', methods=['GET'])
+def get_chain():
+    chain_snapshot = blockchain.chain
+    # convert each block into a dictionary, and make it a copy
+    # this will make the data JSON serializable
+    dict_chain = [block.__dict__.copy() for block in chain_snapshot]
+    # convert each transaction in transactions in each dict_block, into a dictionary
+    for dict_block in dict_chain:
+        dict_block['transactions'] = [
+            tx.__dict__ for tx in dict_block['transactions']]
+
+    # return json version of data, and a 200 Status if successful
+    return jsonify(dict_chain), 200
+
+
 @app.route('/node', methods=['POST'])
 def add_node():
     # request is imported from flask, and has a method called get_json()
@@ -187,22 +203,23 @@ def add_node():
     }
     return jsonify(response), 201
 
-# chain endpoint, gets blockchain data
-@app.route('/chain', methods=['GET'])
-def get_chain():
-    chain_snapshot = blockchain.chain
-    # convert each block into a dictionary, and make it a copy
-    # this will make the data JSON serializable
-    dict_chain = [block.__dict__.copy() for block in chain_snapshot]
-    # convert each transaction in transactions in each dict_block, into a dictionary
-    for dict_block in dict_chain:
-        dict_block['transactions'] = [
-            tx.__dict__ for tx in dict_block['transactions']]
 
-    # return json version of data, and a 200 Status if successful
-    return jsonify(dict_chain), 200
-
-
+#delete requests are encoded in the URL
+#whatever comes after /node/ becomes embedded in <node_url>
+@app.route('/node/<node_url>', methods=['DELETE'])
+def remove_node(node_url):
+    if node_url == '' or node_url == None:
+        response = {
+            'message': 'No node found.'
+        }
+        return jsonify(response), 400
+    blockchain.remove_peer_node(node_url)
+    response = {
+        'message': 'Node removed',
+        'all_nodes': blockchain.get_peer_nodes()
+    }
+    return jsonify(response), 200
+    
 # launch the server only if i'm directly running this file
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
