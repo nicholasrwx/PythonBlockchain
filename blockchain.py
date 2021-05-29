@@ -227,3 +227,6 @@ class Blockchain:
     def remove_peer_node(self, node):
         self.__peer_nodes.discard(node)
         self.save_data()
+
+    def get_peer_nodes(self):
+        return self.__peer_nodes[:]
