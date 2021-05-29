@@ -24,7 +24,10 @@ class Blockchain:
         # Unhandled Transactions
         self.__open_transactions = []
         self.load_data()
+        # Public key for host
         self.hosting_node = hosting_node_id
+
+        self.__peer_nodes = set()
 
     # automatically (implicitly) makes self.chain private, and needs to be accessed with
     # a defined getter and setter using self.__chain
@@ -208,3 +211,11 @@ class Blockchain:
         self.__open_transactions = []
         self.save_data()
         return block
+
+    def add_peer_node(node):
+        # Adds a node to the peer node set
+        # Arguments:
+        #   :node: The node url which should be added.
+
+        self.__peer_nodes.add(node)
+        self.save_data()
