@@ -228,5 +228,6 @@ class Blockchain:
         self.__peer_nodes.discard(node)
         self.save_data()
 
+    #get nodes, convert from a set to a list, and return that value 
     def get_peer_nodes(self):
-        return self.__peer_nodes[:]
+        return list(self.__peer_nodes)
