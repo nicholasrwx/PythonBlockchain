@@ -23,11 +23,11 @@ class Blockchain:
         self.chain = [genesis_block]
         # Unhandled Transactions
         self.__open_transactions = []
-        self.load_data()
         # Public key for host
         self.hosting_node = hosting_node_id
-
         self.__peer_nodes = set()
+        self.load_data()
+
 
     # automatically (implicitly) makes self.chain private, and needs to be accessed with
     # a defined getter and setter using self.__chain
