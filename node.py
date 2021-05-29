@@ -27,11 +27,16 @@ CORS(app)
 
 
 @app.route('/', methods=['GET'])
-def get_ui():
+def get_node_ui():
   # allows to send back a file to the browser from a directory
   # first argument is the directory
   # second argument is the file name
     return send_from_directory('ui', 'node.html')
+
+# there is a clickable button with and href tag that takes us to the endpoint /network
+@app.route('/network', methods=['GET'])
+def get_network_ui():
+    return send_from_directory('ui', 'network.html')
 
 
 @app.route('/wallet', methods=['POST'])
@@ -204,8 +209,8 @@ def add_node():
     return jsonify(response), 201
 
 
-#delete requests are encoded in the URL
-#whatever comes after /node/ becomes embedded in <node_url>
+# delete requests are encoded in the URL
+# whatever comes after /node/ becomes embedded in <node_url>
 @app.route('/node/<node_url>', methods=['DELETE'])
 def remove_node(node_url):
     if node_url == '' or node_url == None:
@@ -220,13 +225,15 @@ def remove_node(node_url):
     }
     return jsonify(response), 200
 
+
 @app.route('/nodes', methods=['GET'])
 def get_nodes():
     nodes = blockchain.get_peer_nodes()
     response = {
-        'all_nodes': nodes 
+        'all_nodes': nodes
     }
     return jsonify(response), 200
+
 
 # launch the server only if i'm directly running this file
 if __name__ == '__main__':
