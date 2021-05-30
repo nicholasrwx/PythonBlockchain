@@ -139,11 +139,18 @@ class Blockchain:
     # IF the sender is a participant
     # You can read this forwards, starting from the smallest piece to the largest piece
 
-    def get_balance(self):
-        # find the hosting node balance and return the value
-        if self.public_key == None:
-            return None
-        participant = self.public_key
+    def get_balance(self, sender=None):
+        # determine if this is a remote transaction with sender
+        if sender == None:
+        #if no sender then,
+        # find the host node balance and return the value,
+        # if a public key exists, set the participant to host key.
+            if self.public_key == None:
+                return None
+            participant = self.public_key
+        else:
+        #set the participant to sender key    
+            participant = sender
 
         tx_sender = [[tx.amount for tx in block.transactions
                       if tx.sender == participant] for block in self.__chain]
