@@ -16,7 +16,7 @@ print(__name__)
 
 
 class Blockchain:
-    def __init__(self, hosting_node_id):
+    def __init__(self, public_key, node_id):
         # Our starting block for the blockchain
         genesis_block = Block(0, '', [], 100, 0)
         # Initializing our (empty) blockchain list
@@ -24,13 +24,14 @@ class Blockchain:
         # Unhandled Transactions
         self.__open_transactions = []
         # Public key for host
-        self.hosting_node = hosting_node_id
+        self.public_key = public_key
         self.__peer_nodes = set()
+        self.node_id = node_id
         self.load_data()
-
 
     # automatically (implicitly) makes self.chain private, and needs to be accessed with
     # a defined getter and setter using self.__chain
+
     @property
     def chain(self):
         return self.__chain[:]
@@ -45,7 +46,7 @@ class Blockchain:
     def load_data(self):
 
         try:
-            with open('blockchain.txt', mode='r') as f:
+            with open('blockchain-{}.txt'.format(self.node_id), mode='r') as f:
                 # use mode=r and file_name.txt for json/txt
                 # use mode=rb and file_name.p for pickling
 
@@ -87,7 +88,7 @@ class Blockchain:
                     updated_transactions.append(updated_transaction)
                 self.__open_transactions = updated_transactions
                 peer_nodes = json.loads(file_content[2])
-                #convert a list of nodes, back to a set, and update peer_nodes
+                # convert a list of nodes, back to a set, and update peer_nodes
                 self.__peer_nodes = set(peer_nodes)
         except (IOError, IndexError):
             pass
@@ -98,7 +99,7 @@ class Blockchain:
 
     def save_data(self):
         try:
-            with open('blockchain.txt', mode='w') as f:
+            with open('blockchain-{}.txt'.format(self.node_id), mode='w') as f:
                 # use mode=w, because we always want to overwrite blockchain, with new snapshot of data
                 # use file_name.txt
                 saveable_chain = [block.__dict__ for block in [Block(block_el.index, block_el.previous_hash, [
@@ -108,7 +109,7 @@ class Blockchain:
                 saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
                 f.write(json.dumps(saveable_tx))
                 f.write('\n')
-                #convert a set of nodes to a list and save it
+                # convert a set of nodes to a list and save it
                 f.write(json.dumps(list(self.__peer_nodes)))
                 # to write to binary instead of default txt, you need mode=wb
                 # you can save the file as file_name.p instead of file_name.txt
@@ -139,9 +140,9 @@ class Blockchain:
 
     def get_balance(self):
         # find the hosting node balance and return the value
-        if self.hosting_node == None:
+        if self.public_key == None:
             return None
-        participant = self.hosting_node
+        participant = self.public_key
 
         tx_sender = [[tx.amount for tx in block.transactions
                       if tx.sender == participant] for block in self.__chain]
@@ -174,7 +175,7 @@ class Blockchain:
         #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
         # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
         # otherwise, unless altered, Normally unordered
-        if self.hosting_node == None:
+        if self.public_key == None:
             return False
         transaction = Transaction(sender, recipient, signature, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
@@ -186,7 +187,7 @@ class Blockchain:
     def mine_block(self):
         # a block should be a dictionary
         # previous hash -> summarized value of the previous block
-        if self.hosting_node == None:
+        if self.public_key == None:
             return None
         last_block = self.__chain[-1]
         hashed_block = hash_block(last_block)
@@ -197,7 +198,7 @@ class Blockchain:
         #     'amount': MINING_REWARD
         # }
         reward_transaction = Transaction(
-            'MINING', self.hosting_node, '', MINING_REWARD)
+            'MINING', self.public_key, '', MINING_REWARD)
         copied_transactions = self.__open_transactions[:]
         # this verifies all the transactions that would be appended to the new block
         # but leaves out the reward transaction. if we get a reward transaction it will be false here.
@@ -228,6 +229,6 @@ class Blockchain:
         self.__peer_nodes.discard(node)
         self.save_data()
 
-    #get nodes, convert from a set to a list, and return that value 
+    # get nodes, convert from a set to a list, and return that value
     def get_peer_nodes(self):
         return list(self.__peer_nodes)
