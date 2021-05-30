@@ -9,10 +9,10 @@
  
     * The structure of a PoW blockchain
     * Hashing and linking blocks with SHA256
-    * Mining / Calculating a PoW
-    * Creating wallets (public/private keys)
+    * Calculating a PoW ( Mining )
+    * Creating wallets ( Public / Private keys )
     * Creating signatures to sign transactions
     * Verifying senders, recipients, and transactions
     * Broadcasting transactions across a network
-    * Updating and Maintaining a blockchain across a network
-    * Various Security mechanisms and checks
+    * Updating and maintaining a blockchain across a network
+    * Various security mechanisms and checks
