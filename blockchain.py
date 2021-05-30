@@ -1,6 +1,7 @@
 import hashlib as hl
 import json
 import pickle
+import requests
 from functools import reduce
 from block import Block
 from transaction import Transaction
@@ -181,6 +182,22 @@ class Blockchain:
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
             self.save_data()
+            # After transaction has been verified and saved
+            # broadcast it to each node
+            for node in self.__peer_nodes:
+                url = 'http://{}/broadcast-transaction'.format(node)
+                # this try-except is to handle connections errors
+                try:
+                    # payload
+                    response = requests.post(url, json={
+                        'sender': sender, 'recipient': recipient, 'amount': amount, 'signature': signature})
+                    # this if statement handles client/server errors
+                    if response.status_code == 400 or response.status_code == 500:
+                        print('Transaction declined, needs resolving')
+                        return False
+                #if there is a connection error, continue broadcasting to the rest of the nodes
+                except requests.exceptions.ConnectionError:
+                    continue
             return True
         return False
 
