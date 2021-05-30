@@ -106,6 +106,24 @@ def broadcast_transaction():
     if not all(key in values for key in required):
         response = {'message': 'Some data is missing.'}
         return jsonify(response), 400
+    success = blockchain.add_transaction(
+        values['recipient'], values['sender'], values['signature'], values['amount'])
+    if success:
+        response = {
+            'message': 'Successfully added transaction.',
+            'transaction': {
+                'sender': values['sender'],
+                'recipient': values['recipient'],
+                'amount': values['amount'],
+                'signature': values['signature']
+            }
+        }
+        return jsonify(response), 201
+    else:
+        response = {
+            'message': 'Creating a transaction failed.'
+        }
+        return jsonify(response), 500
 
 
 @app.route('/transaction', methods=['POST'])
