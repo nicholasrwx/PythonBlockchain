@@ -92,7 +92,7 @@ def get_balance():
         return jsonify(response), 500
 
 
-@app.route('/broadcast-transaction')
+@app.route('/broadcast-transaction', methods=['POST'])
 def broadcast_transaction():
     # request is from flask, requests is it's own package. these are easy to mix up.
     values = request.get_json()
@@ -124,6 +124,28 @@ def broadcast_transaction():
             'message': 'Creating a transaction failed.'
         }
         return jsonify(response), 500
+
+
+@app.route('/broadcast-block', methods=['POST'])
+def broadcast_block():
+    values = request.get_json()
+    if not values:
+        response = {'message': 'No data found.'}
+        return jsonify(response), 400
+    if 'block' not in values:
+        response = {'message': 'Some data is missing.'}
+        return jsonify(response), 400
+    block = values['block']
+    # check to see if the index of the incoming block is 1 higher than the last block on the local blockchain
+    if block['index'] == blockchain.chain[-1].index + 1:
+        pass
+    # if incoming block index is greater than local last block index
+    elif block['index'] > blockchain.chain[-1].index:
+        pass
+    else:
+        response = {
+            'message': 'Blockchain seems to be shorter, block not added.'}
+        return jsonify(response), 409
 
 
 @app.route('/transaction', methods=['POST'])
