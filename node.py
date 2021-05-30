@@ -138,7 +138,7 @@ def broadcast_block():
     block = values['block']
     # check to see if the index of the incoming block is 1 higher than the last block on the local blockchain
     if block['index'] == blockchain.chain[-1].index + 1:
-        pass
+        blockchain.add_block(block)
     # if incoming block index is greater than local last block index
     elif block['index'] > blockchain.chain[-1].index:
         pass
