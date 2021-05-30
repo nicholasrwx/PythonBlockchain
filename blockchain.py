@@ -142,14 +142,14 @@ class Blockchain:
     def get_balance(self, sender=None):
         # determine if this is a remote transaction with sender
         if sender == None:
-        #if no sender then,
-        # find the host node balance and return the value,
-        # if a public key exists, set the participant to host key.
+            # if no sender then,
+            # find the host node balance and return the value,
+            # if a public key exists, set the participant to host key.
             if self.public_key == None:
                 return None
             participant = self.public_key
         else:
-        #set the participant to sender key    
+            # set the participant to sender key
             participant = sender
 
         tx_sender = [[tx.amount for tx in block.transactions
@@ -179,7 +179,7 @@ class Blockchain:
     #   :recipient: The recipient of the coins.
     #   :amount: The amount of coins sent with the transaction (default = 1.0)
 
-    def add_transaction(self, recipient, sender, signature, amount=[1.0]):
+    def add_transaction(self, recipient, sender, signature, amount=[1.0], is_receiving=False):
         #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
         # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
         # otherwise, unless altered, Normally unordered
@@ -191,21 +191,23 @@ class Blockchain:
             self.save_data()
             # After transaction has been verified and saved
             # broadcast it to each node
-            for node in self.__peer_nodes:
-                url = 'http://{}/broadcast-transaction'.format(node)
-                # this try-except is to handle connections errors
-                try:
-                    # payload
-                    response = requests.post(url, json={
-                        'sender': sender, 'recipient': recipient, 'amount': amount, 'signature': signature})
-                    # this if statement handles client/server errors
-                    if response.status_code == 400 or response.status_code == 500:
-                        print('Transaction declined, needs resolving')
-                        return False
-                #if there is a connection error, continue broadcasting to the rest of the nodes
-                except requests.exceptions.ConnectionError:
-                    continue
-            return True
+            # only broadcast if we are sending a transaction(one we just created on the localhost node), not recieving one(one we didn't create)
+            if not is_receiving:
+                for node in self.__peer_nodes:
+                    url = 'http://{}/broadcast-transaction'.format(node)
+                    # this try-except is to handle connections errors
+                    try:
+                        # payload
+                        response = requests.post(url, json={
+                            'sender': sender, 'recipient': recipient, 'amount': amount, 'signature': signature})
+                        # this if statement handles client/server errors
+                        if response.status_code == 400 or response.status_code == 500:
+                            print('Transaction declined, needs resolving')
+                            return False
+                    # if there is a connection error, continue broadcasting to the rest of the nodes
+                    except requests.exceptions.ConnectionError:
+                        continue
+                return True
         return False
 
     def mine_block(self):
