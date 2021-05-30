@@ -92,6 +92,22 @@ def get_balance():
         return jsonify(response), 500
 
 
+@app.route('/broadcast-transaction')
+def broadcast_transaction():
+    # request is from flask, requests is it's own package. these are easy to mix up.
+    values = request.get_json()
+    # if there is no values, return a 400 error
+    if not values:
+        response = {'message': 'No data found.'}
+        return jsonify(response), 400
+    # request.get_json() parses a dictionary, therefore we can get the keys this way
+    required = ['sender', 'recipient', 'amount', 'signature']
+    # check for all keys in values, if false, return a 400 error
+    if not all(key in values for key in required):
+        response = {'message': 'Some data is missing.'}
+        return jsonify(response), 400
+
+
 @app.route('/transaction', methods=['POST'])
 def add_transaction():
     # gives us the data, if it's sent in json format, upon request
