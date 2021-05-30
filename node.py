@@ -6,10 +6,6 @@ from blockchain import Blockchain
 
 # set up our flask server, and give it the name of the file being executed
 app = Flask(__name__)
-# create a wallet Instance
-wallet = Wallet()
-# import blockchain
-blockchain = Blockchain(wallet.public_key)
 # calls the constructor of the CORS class, and pass in the server code we created -> app
 # this allows for multiple nodes aside from the host server to send and receive requests also.
 CORS(app)
@@ -34,6 +30,8 @@ def get_node_ui():
     return send_from_directory('ui', 'node.html')
 
 # there is a clickable button with and href tag that takes us to the endpoint /network
+
+
 @app.route('/network', methods=['GET'])
 def get_network_ui():
     return send_from_directory('ui', 'network.html')
@@ -237,4 +235,20 @@ def get_nodes():
 
 # launch the server only if i'm directly running this file
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    # import argument parser, to get arguments from command line
+    from argparse import ArgumentParser
+    # instantiate it
+    parser = ArgumentParser()
+    # add one of these arguments, and a port if specified at the commandline
+    # if no port is specified, it will set the default to 5000
+    parser.add_argument('-p', '--port', type=int, default=5000)
+    # extract arguments from parser
+    args = parser.parse_args()
+    port = args.port
+    print(args)
+    # create a wallet instance
+    wallet = Wallet(port)
+    # pass Blockchain, public key, and port which is node_id in blockchain.py
+    blockchain = Blockchain(wallet.public_key, port)
+    # for running locally
+    app.run(host='0.0.0.0', port=port)
