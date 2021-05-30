@@ -1,6 +1,6 @@
 # python_blockchain
  
- Learning python and blockchain basics from a udemy course, by building a replica blockchain network that uses the PoW consensus mechanism.
+ Building a replica blockchain network that uses the PoW consensus mechanism in python.
 
  Course name:
     Python - The Practical Guide by Maximilian Schwarzmüller
