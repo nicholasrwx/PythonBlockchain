@@ -183,8 +183,8 @@ class Blockchain:
         #    transaction = {'sender': sender, 'recipient': recipient, 'amount': amount}
         # OrderedDict, creates an ordered dictionary so it's always the same, as dictionaries are
         # otherwise, unless altered, Normally unordered
-        if self.public_key == None:
-            return False
+        # if self.public_key == None:
+        #      return False
         transaction = Transaction(sender, recipient, signature, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
@@ -207,7 +207,7 @@ class Blockchain:
                     # if there is a connection error, continue broadcasting to the rest of the nodes
                     except requests.exceptions.ConnectionError:
                         continue
-                return True
+            return True
         return False
 
     def mine_block(self):
@@ -258,9 +258,9 @@ class Blockchain:
     def add_block(self, block):
         # recieves incoming block, and verifies transactions, checks pow, and compares hash's
         transactions = [Transaction(
-            tx['sender'], tx['recipient'], tx['signature'], tx['amount']) for tx in block['transaction']]
+            tx['sender'], tx['recipient'], tx['signature'], tx['amount']) for tx in block['transactions']]
         proof_is_valid = Verification.valid_proof(
-            transactions, block['previous_hash'], block['proof'])
+            transactions[:-1], block['previous_hash'], block['proof'])
         hashes_match = hash_block(self.chain[-1]) == block['previous_hash']
         if not proof_is_valid or not hashes_match:
             return False
@@ -269,6 +269,21 @@ class Blockchain:
             block['index'], block['previous_hash'], transactions, block['proof'], block['timestamp'])
         # append converted block to local blockchain
         self.__chain.append(converted_block)
+        # update open transactions on the peer node when a new block is broadcast
+        # create a copy of open transactions
+        stored_transactions = self.__open_transactions[:]
+        # loop through block recieved
+        for itx in block['transactions']:
+            # loop through open transactions
+            for opentx in stored_transactions:
+                # compare senders in recveived block and open transactions
+                if opentx.sender == itx['sender'] and opentx.recipient == itx['recipient'] and opentx.amount == itx['amount'] and opentx.signature == itx['signature']:
+                    try:
+                        self.__open_transactions.remove(opentx)
+                    except ValueError:
+                        print('Item was already removed')
+                        # ***
+
         # save updated blockchain
         self.save_data()
         return True
