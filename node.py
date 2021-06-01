@@ -229,12 +229,14 @@ def mine():
 @app.route('/resolve-conflicts', methods=['POST'])
 def resolve_conflicts():
     replaced = blockchain.resolve()
+    #if we replaced the local blockchain
     if replaced:
         response = {'message': 'Chain was replaced!'}
+    #if we didn't replace the local blockchain
     else:
         response = {'message': 'Local chain kept!'}
     return jsonify(response), 200
-    
+
 
 
 @app.route('/transactions', methods=['GET'])
