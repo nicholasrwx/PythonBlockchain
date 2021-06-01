@@ -28,6 +28,7 @@ class Blockchain:
         self.public_key = public_key
         self.__peer_nodes = set()
         self.node_id = node_id
+        self.resolve_conflicts = False
         self.load_data()
 
     # automatically (implicitly) makes self.chain private, and needs to be accessed with
@@ -251,6 +252,11 @@ class Blockchain:
                 response = requests.post(url, json={'block': converted_block})
                 if response.status_code == 400 or response.status_code == 500:
                     print('Block declined, needs resolving')
+                #sets reslove conflict on both ends to true if a 409 error occures
+                #there is another self.resolve_conflicts which does this on the peer node
+                #under broadcast-block
+                if response.status_code == 409:
+                    self.resolve_conflicts = True
             except requests.exceptions.ConnectionError:
                 continue
         return block
