@@ -252,9 +252,9 @@ class Blockchain:
                 response = requests.post(url, json={'block': converted_block})
                 if response.status_code == 400 or response.status_code == 500:
                     print('Block declined, needs resolving')
-                #sets reslove conflict on both ends to true if a 409 error occures
-                #there is another self.resolve_conflicts which does this on the peer node
-                #under broadcast-block
+                # sets reslove conflict on both ends to true if a 409 error occures
+                # there is another self.resolve_conflicts which does this on the peer node
+                # under broadcast-block
                 if response.status_code == 409:
                     self.resolve_conflicts = True
             except requests.exceptions.ConnectionError:
@@ -288,13 +288,24 @@ class Blockchain:
                         self.__open_transactions.remove(opentx)
                     except ValueError:
                         print('Item was already removed')
-                        
 
         # save updated blockchain
         self.save_data()
         return True
 
     def resolve(self):
+        # each node is sent a chain
+        # the response is returned for each node in the for loop
+        # each one is compared against the current local chain
+        # it is converted from json to orderedDict again
+        # the chain is compared for length, and verified
+        # depending on which chain is more valid. local or peer node, only one will be allowed to stay
+        # the chain will either remain the same or get updated.
+        # resolve conflicts will be set to false
+        # the chain will be updated
+        # open transactions are cleared
+        # data is saved
+        # replace value is returned
         winner_chain = self.chain
         replace = False
         for node in self.__peer_nodes:
@@ -302,10 +313,10 @@ class Blockchain:
             try:
                 response = requests.get(url)
                 node_chain = response.json()
-                node_chain = [Block(block['index'], block['previous_hash'], block['transactions'], block['proof'], block['timestamp']) for block in node_chain]
-                node_chain.transactions = [Transaction(tx['sender'], tx['recipient'], tx['signature'], tx['amount']) for tx in node_chain['transactions']]
+                node_chain = [Block(block['index'], block['previous_hash'], [Transaction(tx['sender'], tx['recipient'], tx['signature'], tx['amount'])
+                                    for tx in block['transactions']], block['proof'], block['timestamp']) for block in node_chain]
                 node_chain_length = len(node_chain)
-                local_chain_length = len(self.chain)
+                local_chain_length = len(winner_chain)
                 if node_chain_length > local_chain_length and Verification.verify_chain(node_chain):
                     winner_chain = node_chain
                     replace = True
@@ -317,7 +328,6 @@ class Blockchain:
             self.__open_transactions = []
         self.save_data()
         return replace
-
 
     def add_peer_node(self, node):
         # Adds a node to the peer node set
