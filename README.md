@@ -17,4 +17,4 @@
     * Updating and maintaining a blockchain across a network
     * Various security mechanisms and checks
     * Consensus in a PoW blockchain
-    * Python Programming Language
+    * Python programming language
