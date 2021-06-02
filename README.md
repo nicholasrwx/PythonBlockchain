@@ -5,7 +5,7 @@
  Course name:
     Python - The Practical Guide by Maximilian Schwarzmüller
  
- Things I built and learned about blockchain:
+ Things I built and learned:
  
     * The structure of a PoW blockchain
     * Hashing and linking blocks with SHA256
@@ -16,3 +16,5 @@
     * Broadcasting transactions across a network
     * Updating and maintaining a blockchain across a network
     * Various security mechanisms and checks
+    * Consensus in a PoW blockchain
+    * Python Programming Language
