@@ -51,7 +51,14 @@ class Wallet:
         public_key = private_key.publickey()
 
         # convert key to binary and export it,convert it to hexidecimal, convert it to ascii, convert ascii to string, return it
-        return (binascii.hexlify(private_key.exportKey(format='DER')).decode('ascii'), binascii.hexlify(public_key.exportKey(format='DER')).decode('ascii'))
+        return (
+            binascii
+            .hexlify(private_key.exportKey(format='DER'))
+            .decode('ascii'),
+            binascii
+            .hexlify(public_key.exportKey(format='DER'))
+            .decode('ascii')
+        )
 
     def sign_transaction(self, sender, recipient, amount):
         # create signer entity

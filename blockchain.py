@@ -142,7 +142,7 @@ class Blockchain:
 
     def get_balance(self, sender=None):
         # determine if this is a remote transaction with sender
-        if sender == None:
+        if sender is None:
             # if no sender then,
             # find the host node balance and return the value,
             # if a public key exists, set the participant to host key.
