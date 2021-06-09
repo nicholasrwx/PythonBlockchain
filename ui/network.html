@@ -101,7 +101,6 @@
         },
         methods: {
           onAddNode: function () {
-            // Add node as peer node to local node server
             var vm = this;
             axios
               .post("/node", { node: this.newNodeUrl })
@@ -117,8 +116,6 @@
               });
           },
           onLoadNodes: function () {
-            // Load all peer nodes of the local node server
-            //store access to our Vue instance in vm, so we can access inside nested functions
             var vm = this;
             axios
               .get("/nodes")
@@ -134,7 +131,6 @@
               });
           },
           onRemoveNode: function (node_url) {
-            // Remove node as a peer node
             var vm = this;
             axios
               .delete("/node/" + node_url)

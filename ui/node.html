@@ -305,7 +305,6 @@
         },
         methods: {
           onCreateWallet: function () {
-            // Send Http request to create a new wallet (and return keys)
             var vm = this;
             this.walletLoading = true;
             axios
@@ -331,7 +330,6 @@
               });
           },
           onLoadWallet: function () {
-            // Send Http request to load an existing wallet (from a file on the server)
             var vm = this;
             this.walletLoading = true;
             axios
@@ -358,7 +356,6 @@
               });
           },
           onSendTx: function () {
-            // Send Transaction to backend
             this.txLoading = true;
             var vm = this;
             axios
@@ -407,8 +404,6 @@
           },
           onLoadData: function () {
             if (this.view === "chain") {
-              // Load blockchain data
-              //set this to vm so it accesses this outside a function
               var vm = this;
               this.dataLoading = true;
               axios
@@ -422,7 +417,6 @@
                   vm.error = "Something went wrong.";
                 });
             } else {
-              // Load transaction data
               var vm = this;
               axios
                 .get("/transactions")
