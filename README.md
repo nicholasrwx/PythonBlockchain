@@ -18,8 +18,6 @@
     * Various security mechanisms and checks
     * Consensus in a PoW blockchain
     * Python programming language
-    
-!["Add Node"](https://github.com/nicholasrwx/python_blockchain/blob/main/docs/add_node_to_network.png?raw=true)
 
 !["Create Wallet"](https://github.com/nicholasrwx/python_blockchain/blob/main/docs/blockchain_index.png?raw=true)
 
@@ -27,4 +25,5 @@
 
 !["Send Transactions"](https://github.com/nicholasrwx/python_blockchain/blob/main/docs/send_transaction.png?raw=true)
 
+!["Add Node"](https://github.com/nicholasrwx/python_blockchain/blob/main/docs/add_node_to_network.png?raw=true)
 
