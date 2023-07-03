@@ -1,4 +1,4 @@
-# python_blockchain
+# Python Blockchain
  
  Building a replica blockchain network that uses the PoW consensus mechanism in python.
 
